@@ -35,4 +35,16 @@ public class SalesListController {
     public SalesList save(@RequestBody SalesList salesList) {
         return salesListRepository.save(salesList);
     }
+
+    @PostMapping(value = "/{id}")
+    public ResponseEntity update(@PathVariable("id") Long id,
+                                 @RequestBody SalesList salesList) {
+        return salesListRepository.findById(id)
+                .map(record -> {
+                    record.setSalespeopleId(salesList.getSalespeopleId());
+                    record.setSales(salesList.getSales());
+                    SalesList update = salesListRepository.save(record);
+                    return ResponseEntity.ok().body(update);
+                }).orElse(ResponseEntity.notFound().build());
+    }
 }

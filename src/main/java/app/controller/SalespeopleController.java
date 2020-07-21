@@ -35,4 +35,21 @@ public class SalespeopleController {
     public Salespeople save(@RequestBody Salespeople salespeople) {
         return salespeopleRepository.save(salespeople);
     }
+
+    @PostMapping(value = "/{id}")
+    public ResponseEntity update(@PathVariable("id") Long id,
+                                 @RequestBody Salespeople salespeople) {
+        return salespeopleRepository.findById(id)
+                .map(record -> {
+                    record.setName(salespeople.getName());
+                    record.setEmail(salespeople.getEmail());
+                    record.setPassword(salespeople.getPassword());
+                    record.setGenre(salespeople.getGenre());
+                    record.setBirthdate(salespeople.getBirthdate());
+                    record.setCompanyStartDate(salespeople.getCompanyStartDate());
+                    record.setSalesIdList(salespeople.getSalesIdList());
+                    Salespeople update = salespeopleRepository.save(record);
+                    return ResponseEntity.ok().body(update);
+                }).orElse(ResponseEntity.notFound().build());
+    }
 }

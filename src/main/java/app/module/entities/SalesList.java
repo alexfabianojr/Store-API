@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,5 +22,5 @@ public class SalesList {
     private int salespeopleId;
 
     @Column(name = "sales_sales")
-    private String sales;
+    private ArrayList<String> sales = new ArrayList<>();
 }

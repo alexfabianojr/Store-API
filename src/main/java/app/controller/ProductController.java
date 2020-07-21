@@ -35,4 +35,21 @@ public class ProductController {
     public Product save(@RequestBody Product product) {
         return productRepository.save(product);
     }
+
+    @PostMapping(value = "/{id}")
+    public ResponseEntity update(@PathVariable("id") Long id,
+                                 @RequestBody Product product) {
+        return productRepository.findById(id)
+                .map(record -> {
+                    record.setCode(product.getCode());
+                    record.setName(product.getName());
+                    record.setDescription(product.getDescription());
+                    record.setPrice(product.getPrice());
+                    record.setQuantity(product.getQuantity());
+                    record.setWeight(product.getWeight());
+                    record.setDimension(product.getDimension());
+                    Product update = productRepository.save(record);
+                    return ResponseEntity.ok().body(update);
+                }).orElse(ResponseEntity.notFound().build());
+    }
 }

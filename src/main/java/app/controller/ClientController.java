@@ -35,4 +35,18 @@ public class ClientController {
     public Client save(@RequestBody Client client) {
         return clientRepository.save(client);
     }
+
+    @PostMapping(value = "/{id}")
+    public ResponseEntity update(@PathVariable("id") Long id,
+                                 @RequestBody Client client) {
+        return clientRepository.findById(id)
+                .map(record -> {
+                    record.setName(client.getName());
+                    record.setGenre(client.getGenre());
+                    record.setEmail(client.getEmail());
+                    record.setShoppingList(client.getShoppingList());
+                    Client update = clientRepository.save(record);
+                    return ResponseEntity.ok().body(update);
+                }).orElse(ResponseEntity.notFound().build());
+    }
 }
