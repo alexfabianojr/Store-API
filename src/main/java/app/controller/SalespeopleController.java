@@ -3,6 +3,7 @@ package app.controller;
 import app.module.entities.Salespeople;
 import app.repository.SalespeopleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,8 +21,15 @@ public class SalespeopleController {
         this.salespeopleRepository = salespeopleRepository;
     }
 
-    @GetMapping
+    @GetMapping(path = "/findall")
     public List<Salespeople> findAll() {
         return salespeopleRepository.findAll();
+    }
+
+    @GetMapping(path = "/{id}")
+    public ResponseEntity<Salespeople> findById(Long id) {
+        return salespeopleRepository.findById(id)
+                .map(record -> ResponseEntity.ok().body(record))
+                .orElse(ResponseEntity.notFound().build());
     }
 }
