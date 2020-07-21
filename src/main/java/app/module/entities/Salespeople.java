@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
 
 @AllArgsConstructor
@@ -37,5 +38,5 @@ public class Salespeople {
     private Date companyStartDate;
 
     @Column(name = "sp_salesIdList")
-    private String salesIdList;
+    private ArrayList<Integer> salesIdList = new ArrayList<>();
 }

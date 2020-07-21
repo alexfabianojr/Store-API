@@ -4,9 +4,7 @@ import app.module.entities.Salespeople;
 import app.repository.SalespeopleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -31,5 +29,10 @@ public class SalespeopleController {
         return salespeopleRepository.findById(id)
                 .map(record -> ResponseEntity.ok().body(record))
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PostMapping(path = "/save")
+    public Salespeople save(@RequestBody Salespeople salespeople) {
+        return salespeopleRepository.save(salespeople);
     }
 }
