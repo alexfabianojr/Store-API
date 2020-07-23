@@ -1,5 +1,7 @@
 package app.module.entities;
 
+import app.module.pojo.Sale;
+import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,9 +20,11 @@ public class SalesList {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @NotNull
     @Column(name = "sales_salespeopleId")
     private int salespeopleId;
 
+    @NotNull
     @Column(name = "sales_sales")
-    private ArrayList<String> sales = new ArrayList<>();
+    private ArrayList<Sale> sales = new ArrayList<>();
 }

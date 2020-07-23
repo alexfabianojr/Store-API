@@ -1,5 +1,6 @@
 package app.module.entities;
 
+import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,12 +19,15 @@ public class Client {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @NotNull
     @Column(name = "client_name")
     private String name;
 
+    @NotNull
     @Column(name = "client_genre")
     private char genre;
 
+    @NotNull
     @Column(name = "client_email")
     private String email;
 

@@ -1,5 +1,6 @@
 package app.module.entities;
 
+import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,18 +18,23 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @NotNull
     @Column(name = "product_code")
     private String code;
 
+    @NotNull
     @Column(name = "product_name")
     private String name;
 
+    @NotNull
     @Column(name = "product_description")
     private String description;
 
+    @NotNull
     @Column(name = "product_price")
     private Double price;
 
+    @NotNull
     @Column(name = "product_quantity")
     private int quantity;
 

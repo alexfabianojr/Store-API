@@ -1,11 +1,15 @@
 package app.module.pojo;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.io.Serializable;
 
 @AllArgsConstructor
 @NoArgsConstructor
-public class Sales {
+@Data
+public class Sale implements Serializable {
     private int productId;
     private int productQuantity;
 }
