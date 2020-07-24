@@ -1,50 +1,165 @@
 package app.module.entities;
 
-import com.sun.istack.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Objects;
 
-@AllArgsConstructor
-@NoArgsConstructor
-@Data
 @Entity
 @Table(name = "tb_salespeople")
 public class Salespeople {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
-    @NotNull
     @Column(name = "sp_name")
     private String name;
 
-    @NotNull
     @Column(name = "sp_email")
     private String email;
 
-    @NotNull
     @Column(name = "sp_password")
     private String password;
 
-    @NotNull
     @Column(name = "sp_genre")
     private char genre;
 
-    @NotNull
     @Column(name = "sp_birthdate")
     private LocalDate birthdate;
 
-    @NotNull
     @Column(name = "sp_companyStartDate")
     private LocalDate companyStartDate;
 
-    @NotNull
     @Column(name = "sp_salesIdList")
     private ArrayList<Integer> salesIdList = new ArrayList<>();
+
+    public Salespeople() {
+    }
+
+    public Salespeople(String name, String email, String password, char genre,
+                       LocalDate birthdate, LocalDate companyStartDate, ArrayList<Integer> salesIdList) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.genre = genre;
+        this.birthdate = birthdate;
+        this.companyStartDate = companyStartDate;
+        this.salesIdList = salesIdList;
+    }
+
+    public Salespeople(Long id, String name, String email, String password, char genre,
+                       LocalDate birthdate, LocalDate companyStartDate, ArrayList<Integer> salesIdList) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.genre = genre;
+        this.birthdate = birthdate;
+        this.companyStartDate = companyStartDate;
+        this.salesIdList = salesIdList;
+    }
+
+    @Override
+    public String toString() {
+        return "Salespeople{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", genre=" + genre +
+                ", birthdate=" + birthdate +
+                ", companyStartDate=" + companyStartDate +
+                ", salesIdList=" + salesIdList +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Salespeople that = (Salespeople) o;
+
+        if (genre != that.genre) return false;
+        if (!Objects.equals(id, that.id)) return false;
+        if (!Objects.equals(name, that.name)) return false;
+        if (!Objects.equals(email, that.email)) return false;
+        if (!Objects.equals(birthdate, that.birthdate)) return false;
+        return Objects.equals(companyStartDate, that.companyStartDate);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (email != null ? email.hashCode() : 0);
+        result = 31 * result + (int) genre;
+        result = 31 * result + (birthdate != null ? birthdate.hashCode() : 0);
+        result = 31 * result + (companyStartDate != null ? companyStartDate.hashCode() : 0);
+        return result;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public char getGenre() {
+        return genre;
+    }
+
+    public void setGenre(char genre) {
+        this.genre = genre;
+    }
+
+    public LocalDate getBirthdate() {
+        return birthdate;
+    }
+
+    public void setBirthdate(LocalDate birthdate) {
+        this.birthdate = birthdate;
+    }
+
+    public LocalDate getCompanyStartDate() {
+        return companyStartDate;
+    }
+
+    public void setCompanyStartDate(LocalDate companyStartDate) {
+        this.companyStartDate = companyStartDate;
+    }
+
+    public ArrayList<Integer> getSalesIdList() {
+        return salesIdList;
+    }
+
+    public void setSalesIdList(ArrayList<Integer> salesIdList) {
+        this.salesIdList = salesIdList;
+    }
 }

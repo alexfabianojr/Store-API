@@ -9,13 +9,13 @@ import javax.annotation.PostConstruct;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-@Component
+//@Component
 public class DummyDataSalespeople {
 
     @Autowired
     SalespeopleRepository salespeopleRepository;
 
-    @PostConstruct
+    //@PostConstruct
     public void salespeoplePopulation() {
 
         ArrayList<Salespeople> salespeopleArrayList = new ArrayList<>();

@@ -25,7 +25,7 @@ public class SalespeopleController {
     }
 
     @GetMapping(path = "/{id}")
-    public ResponseEntity<Salespeople> findById(Long id) {
+    public ResponseEntity<Salespeople> findById(@PathVariable("id") Long id) {
         return salespeopleRepository.findById(id)
                 .map(record -> ResponseEntity.ok().body(record))
                 .orElse(ResponseEntity.notFound().build());

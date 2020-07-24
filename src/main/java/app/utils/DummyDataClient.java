@@ -8,13 +8,13 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 
-@Component
+//@Component
 public class DummyDataClient {
 
     @Autowired
     ClientRepository clientRepository;
 
-    @PostConstruct
+    //@PostConstruct
     public void clientPopulation() {
 
         ArrayList<Client> clients = new ArrayList<>();

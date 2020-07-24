@@ -9,13 +9,13 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 
-@Component
+//@Component
 public class DummyDataSalesList {
 
     @Autowired
     SalesListRepository salesListRepository;
 
-    @PostConstruct
+    //@PostConstruct
     public void salesListPopulation() {
 
         ArrayList<SalesList> salesListArrayList = new ArrayList<>();

@@ -7,7 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "/store-api-client")
@@ -20,24 +19,24 @@ public class ClientController {
         this.clientRepository = clientRepository;
     }
 
-    @GetMapping(path = "/findall")
+    @GetMapping(path = "/find-all")
     public List<Client> findAll() {
         return clientRepository.findAll();
     }
 
-    @GetMapping(path = "/{id}")
-    public ResponseEntity<Client> findById(Long id) {
+    @GetMapping(path = "/find-by-id/{id}")
+    public ResponseEntity<Client> findById(@PathVariable("id") Long id) {
         return clientRepository.findById(id)
                 .map(record -> ResponseEntity.ok().body(record))
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PostMapping(path = "/save")
+    @PostMapping(path = "/save-new-client")
     public Client save(@RequestBody Client client) {
         return clientRepository.save(client);
     }
 
-    @PostMapping(value = "/{id}")
+    @PostMapping(value = "/update-client/{id}")
     public ResponseEntity update(@PathVariable("id") Long id,
                                  @RequestBody Client client) {
         return clientRepository.findById(id)
