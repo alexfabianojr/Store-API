@@ -15,7 +15,10 @@ public class SalesList {
     private Long id;
 
     @Column(name = "sales_salespeopleId")
-    private int salespeopleId;
+    private Long salespeopleId;
+
+    @Column(name = "sales_clientId")
+    private Long clientId;
 
     @Column(name = "sales_sales")
     private ArrayList<Sale> sales = new ArrayList<>();
@@ -23,14 +26,16 @@ public class SalesList {
     public SalesList() {
     }
 
-    public SalesList(int salespeopleId, ArrayList<Sale> sales) {
+    public SalesList(Long salespeopleId, Long clientId, ArrayList<Sale> sales) {
         this.salespeopleId = salespeopleId;
+        this.clientId = clientId;
         this.sales = sales;
     }
 
-    public SalesList(Long id, int salespeopleId, ArrayList<Sale> sales) {
+    public SalesList(Long id, Long salespeopleId, Long clientId, ArrayList<Sale> sales) {
         this.id = id;
         this.salespeopleId = salespeopleId;
+        this.clientId = clientId;
         this.sales = sales;
     }
 
@@ -39,6 +44,7 @@ public class SalesList {
         return "SalesList{" +
                 "id=" + id +
                 ", salespeopleId=" + salespeopleId +
+                ", clientId=" + clientId +
                 ", sales=" + sales +
                 '}';
     }
@@ -50,14 +56,17 @@ public class SalesList {
 
         SalesList salesList = (SalesList) o;
 
-        if (salespeopleId != salesList.salespeopleId) return false;
-        return Objects.equals(id, salesList.id);
+        if (!Objects.equals(id, salesList.id)) return false;
+        if (!Objects.equals(salespeopleId, salesList.salespeopleId))
+            return false;
+        return Objects.equals(clientId, salesList.clientId);
     }
 
     @Override
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + salespeopleId;
+        result = 31 * result + (salespeopleId != null ? salespeopleId.hashCode() : 0);
+        result = 31 * result + (clientId != null ? clientId.hashCode() : 0);
         return result;
     }
 
@@ -69,12 +78,20 @@ public class SalesList {
         this.id = id;
     }
 
-    public int getSalespeopleId() {
+    public Long getSalespeopleId() {
         return salespeopleId;
     }
 
-    public void setSalespeopleId(int salespeopleId) {
+    public void setSalespeopleId(Long salespeopleId) {
         this.salespeopleId = salespeopleId;
+    }
+
+    public Long getClientId() {
+        return clientId;
+    }
+
+    public void setClientId(Long clientId) {
+        this.clientId = clientId;
     }
 
     public ArrayList<Sale> getSales() {

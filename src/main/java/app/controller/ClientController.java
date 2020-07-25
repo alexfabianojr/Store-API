@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/store-api-client")
+@RequestMapping(value = "/store-api/client")
 public class ClientController {
 
     @Autowired
@@ -19,24 +19,24 @@ public class ClientController {
         this.clientRepository = clientRepository;
     }
 
-    @GetMapping(path = "/find-all")
+    @GetMapping(path = "/findall")
     public List<Client> findAll() {
         return clientRepository.findAll();
     }
 
-    @GetMapping(path = "/find-by-id/{id}")
+    @GetMapping(path = "/findbyid/{id}")
     public ResponseEntity<Client> findById(@PathVariable("id") Long id) {
         return clientRepository.findById(id)
                 .map(record -> ResponseEntity.ok().body(record))
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PostMapping(path = "/save-new-client")
+    @PostMapping(path = "/newclient")
     public Client save(@RequestBody Client client) {
         return clientRepository.save(client);
     }
 
-    @PostMapping(value = "/update-client/{id}")
+    @PostMapping(value = "/update-alldata/{id}")
     public ResponseEntity<Client> update(@PathVariable("id") Long id,
                                  @RequestBody Client client) {
         return clientRepository.findById(id)
@@ -50,7 +50,7 @@ public class ClientController {
                 }).orElse(ResponseEntity.notFound().build());
     }
 
-    @PostMapping(value = "/update-client-email/{id}")
+    @PostMapping(value = "/update-email/{id}")
     public ResponseEntity<Client> emailUpdateById(@PathVariable("id") Long id,
                                               @RequestBody Client newData) {
         if (clientRepository.findById(id).isPresent()) {

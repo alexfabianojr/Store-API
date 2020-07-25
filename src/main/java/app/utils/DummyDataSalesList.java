@@ -9,13 +9,13 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 
-//@Component
+@Component
 public class DummyDataSalesList {
 
     @Autowired
     SalesListRepository salesListRepository;
 
-    //@PostConstruct
+    @PostConstruct
     public void salesListPopulation() {
 
         ArrayList<SalesList> salesListArrayList = new ArrayList<>();
@@ -48,16 +48,20 @@ public class DummyDataSalesList {
         listOfSingleSales.add(sale3);
         listOfSingleSales.add(sale4);
 
-        salesList1.setSalespeopleId(1);
+        salesList1.setSalespeopleId((long) 1);
+        salesList1.setClientId((long) 1);
         salesList1.setSales(listOfSingleSales);
 
-        salesList2.setSalespeopleId(2);
+        salesList2.setSalespeopleId((long) 2);
+        salesList2.setClientId((long) 2);
         salesList2.setSales(listOfSingleSales);
 
-        salesList3.setSalespeopleId(3);
+        salesList3.setSalespeopleId((long) 3);
+        salesList3.setClientId((long) 3);
         salesList3.setSales(listOfSingleSales);
 
-        salesList4.setSalespeopleId(4);
+        salesList4.setSalespeopleId((long) 4);
+        salesList4.setClientId((long) 4);
         salesList4.setSales(listOfSingleSales);
 
         salesListArrayList.add(salesList1);

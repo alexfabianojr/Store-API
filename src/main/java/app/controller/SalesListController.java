@@ -2,6 +2,8 @@ package app.controller;
 
 import app.module.entities.SalesList;
 import app.repository.SalesListRepository;
+import app.services.UpdateClientShoppingList;
+import app.services.UpdateSellerSalesIdList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -9,11 +11,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/store-api-saleslist")
+@RequestMapping(value = "/store-api/saleslist")
 public class SalesListController {
 
     @Autowired
-    private SalesListRepository salesListRepository;
+    private final SalesListRepository salesListRepository;
 
     public SalesListController(SalesListRepository salesListRepository) {
         this.salesListRepository = salesListRepository;
@@ -32,12 +34,17 @@ public class SalesListController {
     }
 
     @PostMapping(path = "/save")
-    public SalesList save(@RequestBody SalesList salesList) {
-        return salesListRepository.save(salesList);
+    public SalesList saveNewSalesList(@RequestBody SalesList salesList) {
+        Long idSales = salesListRepository.save(salesList).getId();
+        Long idSeller = salesList.getSalespeopleId();
+        Long idClient = salesList.getClientId();
+        UpdateSellerSalesIdList.byId(idSales, idSeller);
+        UpdateClientShoppingList.byId(idSales, idClient);
+        return salesList;
     }
 
     @PostMapping(value = "/{id}")
-    public ResponseEntity update(@PathVariable("id") Long id,
+    public ResponseEntity<SalesList> update(@PathVariable("id") Long id,
                                  @RequestBody SalesList salesList) {
         return salesListRepository.findById(id)
                 .map(record -> {

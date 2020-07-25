@@ -8,13 +8,13 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 
-//@Component
+@Component
 public class DummyDataClient {
 
     @Autowired
     ClientRepository clientRepository;
 
-    //@PostConstruct
+    @PostConstruct
     public void clientPopulation() {
 
         ArrayList<Client> clients = new ArrayList<>();
@@ -24,25 +24,25 @@ public class DummyDataClient {
         Client client3 = new Client();
         Client client4 = new Client();
 
-        ArrayList<Integer> integers1 = new ArrayList<>();
-        ArrayList<Integer> integers2 = new ArrayList<>();
-        ArrayList<Integer> integers3 = new ArrayList<>();
-        ArrayList<Integer> integers4 = new ArrayList<>();
+        ArrayList<Long> integers1 = new ArrayList<>();
+        ArrayList<Long> integers2 = new ArrayList<>();
+        ArrayList<Long> integers3 = new ArrayList<>();
+        ArrayList<Long> integers4 = new ArrayList<>();
 
-        integers1.add(1);
-        integers1.add(2);
+        integers1.add((long) 1);
+        integers1.add((long) 2);
 
-        integers2.add(3);
-        integers2.add(4);
-        integers2.add(5);
+        integers2.add((long) 3);
+        integers2.add((long) 4);
+        integers2.add((long) 5);
 
-        integers3.add(6);
+        integers3.add((long) 6);
 
-        integers4.add(7);
-        integers4.add(8);
-        integers4.add(9);
-        integers4.add(10);
-        integers4.add(11);
+        integers4.add((long) 7);
+        integers4.add((long) 8);
+        integers4.add((long) 9);
+        integers4.add((long) 10);
+        integers4.add((long) 11);
 
         client1.setName("Alex Fabiano");
         client1.setGenre('M');

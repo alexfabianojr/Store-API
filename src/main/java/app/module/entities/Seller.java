@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 @Entity
-@Table(name = "tb_salespeople")
-public class Salespeople {
+@Table(name = "tb_sellers")
+public class Seller {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,13 +32,13 @@ public class Salespeople {
     private LocalDate companyStartDate;
 
     @Column(name = "sp_salesIdList")
-    private ArrayList<Integer> salesIdList = new ArrayList<>();
+    private ArrayList<Long> salesIdList = new ArrayList<Long>();
 
-    public Salespeople() {
+    public Seller() {
     }
 
-    public Salespeople(String name, String email, String password, char genre,
-                       LocalDate birthdate, LocalDate companyStartDate, ArrayList<Integer> salesIdList) {
+    public Seller(String name, String email, String password, char genre,
+                  LocalDate birthdate, LocalDate companyStartDate, ArrayList<Long> salesIdList) {
         this.name = name;
         this.email = email;
         this.password = password;
@@ -48,8 +48,8 @@ public class Salespeople {
         this.salesIdList = salesIdList;
     }
 
-    public Salespeople(Long id, String name, String email, String password, char genre,
-                       LocalDate birthdate, LocalDate companyStartDate, ArrayList<Integer> salesIdList) {
+    public Seller(Long id, String name, String email, String password, char genre,
+                  LocalDate birthdate, LocalDate companyStartDate, ArrayList<Long> salesIdList) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -62,7 +62,7 @@ public class Salespeople {
 
     @Override
     public String toString() {
-        return "Salespeople{" +
+        return "Seller{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
@@ -78,7 +78,7 @@ public class Salespeople {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Salespeople that = (Salespeople) o;
+        Seller that = (Seller) o;
 
         if (genre != that.genre) return false;
         if (!Objects.equals(id, that.id)) return false;
@@ -155,11 +155,11 @@ public class Salespeople {
         this.companyStartDate = companyStartDate;
     }
 
-    public ArrayList<Integer> getSalesIdList() {
+    public ArrayList<Long> getSalesIdList() {
         return salesIdList;
     }
 
-    public void setSalesIdList(ArrayList<Integer> salesIdList) {
+    public void setSalesIdList(ArrayList<Long> salesIdList) {
         this.salesIdList = salesIdList;
     }
 }

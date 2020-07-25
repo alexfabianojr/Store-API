@@ -22,19 +22,19 @@ public class Client {
     private String email;
 
     @Column(name = "client_shoppingList")
-    private ArrayList<Integer> shoppingList = new ArrayList<>();
+    private ArrayList<Long> shoppingList = new ArrayList<Long>();
 
     public Client() {
     }
 
-    public Client(String name, char genre, String email, ArrayList<Integer> shoppingList) {
+    public Client(String name, char genre, String email, ArrayList<Long> shoppingList) {
         this.name = name;
         this.genre = genre;
         this.email = email;
         this.shoppingList = shoppingList;
     }
 
-    public Client(Long id, String name, char genre, String email, ArrayList<Integer> shoppingList) {
+    public Client(Long id, String name, char genre, String email, ArrayList<Long> shoppingList) {
         this.id = id;
         this.name = name;
         this.genre = genre;
@@ -107,11 +107,11 @@ public class Client {
         this.email = email;
     }
 
-    public ArrayList<Integer> getShoppingList() {
+    public ArrayList<Long> getShoppingList() {
         return shoppingList;
     }
 
-    public void setShoppingList(ArrayList<Integer> shoppingList) {
+    public void setShoppingList(ArrayList<Long> shoppingList) {
         this.shoppingList = shoppingList;
     }
 }

@@ -8,13 +8,13 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 
-//@Component
+@Component
 public class DummyDataProduct {
 
     @Autowired
     ProductRepository productRepository;
 
-    //@PostConstruct
+    @PostConstruct
     public void productPopulation() {
 
         ArrayList<Product> products = new ArrayList<>();
