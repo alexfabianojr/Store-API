@@ -13,7 +13,7 @@ import java.util.List;
 public class ClientController {
 
     @Autowired
-    private ClientRepository clientRepository;
+    private final ClientRepository clientRepository;
 
     public ClientController(ClientRepository clientRepository) {
         this.clientRepository = clientRepository;
@@ -37,7 +37,7 @@ public class ClientController {
     }
 
     @PostMapping(value = "/update-client/{id}")
-    public ResponseEntity update(@PathVariable("id") Long id,
+    public ResponseEntity<Client> update(@PathVariable("id") Long id,
                                  @RequestBody Client client) {
         return clientRepository.findById(id)
                 .map(record -> {
@@ -48,5 +48,25 @@ public class ClientController {
                     Client update = clientRepository.save(record);
                     return ResponseEntity.ok().body(update);
                 }).orElse(ResponseEntity.notFound().build());
+    }
+
+    @PostMapping(value = "/update-client-email/{id}")
+    public ResponseEntity<Client> emailUpdateById(@PathVariable("id") Long id,
+                                              @RequestBody Client newData) {
+        if (clientRepository.findById(id).isPresent()) {
+            Client oldData = clientRepository.findById(id).get();
+            return clientRepository.findById(id)
+                    .map(record -> {
+                        record.setId(id);
+                        record.setName(oldData.getName());
+                        record.setGenre(oldData.getGenre());
+                        record.setEmail(newData.getEmail());
+                        record.setShoppingList(oldData.getShoppingList());
+                        Client update = clientRepository.save(record);
+                        return ResponseEntity.ok().body(update);
+                    }).orElse(ResponseEntity.notFound().build());
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 }
