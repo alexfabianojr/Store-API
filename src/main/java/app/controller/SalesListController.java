@@ -35,9 +35,10 @@ public class SalesListController {
 
     @PostMapping(path = "/save")
     public SalesList saveNewSalesList(@RequestBody SalesList salesList) {
-        Long idSales = salesListRepository.save(salesList).getId();
-        Long idSeller = salesList.getSalespeopleId();
-        Long idClient = salesList.getClientId();
+        SalesList newSale = salesListRepository.save(salesList);
+        Long idSales = newSale.getId();
+        Long idSeller = newSale.getSalespeopleId();
+        Long idClient = newSale.getClientId();
         UpdateSellerSalesIdList.byId(idSales, idSeller);
         UpdateClientShoppingList.byId(idSales, idClient);
         return salesList;

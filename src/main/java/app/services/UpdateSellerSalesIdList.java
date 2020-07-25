@@ -10,6 +10,7 @@ public class UpdateSellerSalesIdList {
     private static SellersRepository sellersRepository;
 
     public static void byId(Long newSaleId, Long idSeller) {
+        System.out.println("---> " + idSeller);
         try {
             if (sellersRepository.findById(idSeller).isPresent()) {
                 Seller seller = sellersRepository

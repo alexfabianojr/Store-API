@@ -10,6 +10,7 @@ public class UpdateClientShoppingList {
     private static ClientRepository clientRepository;
 
     public static void byId(Long newSaleId, Long idClient) {
+        System.out.println("---> " + idClient);
         try {
             if (clientRepository.findById(idClient).isPresent()) {
                 Client client = clientRepository
