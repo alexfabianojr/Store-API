@@ -1,13 +1,17 @@
 package app.controller;
 
+import app.module.entities.Client;
 import app.module.entities.SalesList;
+import app.module.entities.Seller;
+import app.repository.ClientRepository;
 import app.repository.SalesListRepository;
-import app.services.UpdateClientShoppingList;
-import app.services.UpdateSellerSalesIdList;
+import app.repository.SellersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -15,10 +19,35 @@ import java.util.List;
 public class SalesListController {
 
     @Autowired
-    private final SalesListRepository salesListRepository;
+    private SalesListRepository salesListRepository;
+
+    @Autowired
+    private ClientRepository clientRepository;
+
+    @Autowired
+    private SellersRepository sellersRepository;
+
+    public SalesListController() {
+    }
 
     public SalesListController(SalesListRepository salesListRepository) {
         this.salesListRepository = salesListRepository;
+    }
+
+    public SalesListController(ClientRepository clientRepository) {
+        this.clientRepository = clientRepository;
+    }
+
+    public SalesListController(SellersRepository sellersRepository) {
+        this.sellersRepository = sellersRepository;
+    }
+
+    public SalesListController(SalesListRepository salesListRepository,
+                               ClientRepository clientRepository,
+                               SellersRepository sellersRepository) {
+        this.salesListRepository = salesListRepository;
+        this.clientRepository = clientRepository;
+        this.sellersRepository = sellersRepository;
     }
 
     @GetMapping(path = "/findall")
@@ -36,12 +65,41 @@ public class SalesListController {
     @PostMapping(path = "/save")
     public SalesList saveNewSalesList(@RequestBody SalesList salesList) {
         SalesList newSale = salesListRepository.save(salesList);
-        Long idSales = newSale.getId();
-        Long idSeller = newSale.getSalespeopleId();
         Long idClient = newSale.getClientId();
-        UpdateSellerSalesIdList.byId(idSales, idSeller);
-        UpdateClientShoppingList.byId(idSales, idClient);
-        return salesList;
+        Long idSeller = newSale.getSalespeopleId();
+        try {
+            if (clientRepository.findById(idClient).isPresent()) {
+                Client client = clientRepository
+                        .findById(idClient)
+                        .get();
+                ArrayList<Long> longs = clientRepository
+                        .findById(idClient)
+                        .get()
+                        .getShoppingList();
+                longs.add(newSale.getId());
+                client.setShoppingList(longs);
+                clientRepository.save(client);
+            } else {
+                throw new Exception();
+            }
+            if (sellersRepository.findById(idSeller).isPresent()){
+                Seller seller = sellersRepository
+                        .findById(idSeller)
+                        .get();
+                ArrayList<Long> longs = sellersRepository
+                        .findById(idSeller)
+                        .get()
+                        .getSalesIdList();
+                longs.add(newSale.getId());
+                seller.setSalesIdList(longs);
+                sellersRepository.save(seller);
+            } else {
+                throw new Exception();
+            }
+        } catch (Exception e) {
+            System.out.println(Arrays.toString(e.getStackTrace()));
+        }
+        return newSale;
     }
 
     @PostMapping(value = "/{id}")
