@@ -6,6 +6,8 @@ import app.module.entities.Seller;
 import app.repository.ClientRepository;
 import app.repository.SalesListRepository;
 import app.repository.SellersRepository;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,6 +16,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+
+@AllArgsConstructor
+@NoArgsConstructor
 @RestController
 @RequestMapping(value = "/store-api/saleslist")
 public class SalesListController {
@@ -26,29 +31,6 @@ public class SalesListController {
 
     @Autowired
     private SellersRepository sellersRepository;
-
-    public SalesListController() {
-    }
-
-    public SalesListController(SalesListRepository salesListRepository) {
-        this.salesListRepository = salesListRepository;
-    }
-
-    public SalesListController(ClientRepository clientRepository) {
-        this.clientRepository = clientRepository;
-    }
-
-    public SalesListController(SellersRepository sellersRepository) {
-        this.sellersRepository = sellersRepository;
-    }
-
-    public SalesListController(SalesListRepository salesListRepository,
-                               ClientRepository clientRepository,
-                               SellersRepository sellersRepository) {
-        this.salesListRepository = salesListRepository;
-        this.clientRepository = clientRepository;
-        this.sellersRepository = sellersRepository;
-    }
 
     @GetMapping(path = "/findall")
     public List<SalesList> findAll() {
