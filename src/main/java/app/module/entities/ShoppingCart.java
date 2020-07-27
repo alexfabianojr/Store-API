@@ -8,7 +8,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "tb_sales")
-public class SalesList {
+public class ShoppingCart {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,16 +23,16 @@ public class SalesList {
     @Column(name = "sales_sales")
     private ArrayList<Sale> sales = new ArrayList<>();
 
-    public SalesList() {
+    public ShoppingCart() {
     }
 
-    public SalesList(Long salespeopleId, Long clientId, ArrayList<Sale> sales) {
+    public ShoppingCart(Long salespeopleId, Long clientId, ArrayList<Sale> sales) {
         this.salespeopleId = salespeopleId;
         this.clientId = clientId;
         this.sales = sales;
     }
 
-    public SalesList(Long id, Long salespeopleId, Long clientId, ArrayList<Sale> sales) {
+    public ShoppingCart(Long id, Long salespeopleId, Long clientId, ArrayList<Sale> sales) {
         this.id = id;
         this.salespeopleId = salespeopleId;
         this.clientId = clientId;
@@ -41,7 +41,7 @@ public class SalesList {
 
     @Override
     public String toString() {
-        return "SalesList{" +
+        return "ShoppingCart{" +
                 "id=" + id +
                 ", salespeopleId=" + salespeopleId +
                 ", clientId=" + clientId +
@@ -54,12 +54,12 @@ public class SalesList {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        SalesList salesList = (SalesList) o;
+        ShoppingCart shoppingCart = (ShoppingCart) o;
 
-        if (!Objects.equals(id, salesList.id)) return false;
-        if (!Objects.equals(salespeopleId, salesList.salespeopleId))
+        if (!Objects.equals(id, shoppingCart.id)) return false;
+        if (!Objects.equals(salespeopleId, shoppingCart.salespeopleId))
             return false;
-        return Objects.equals(clientId, salesList.clientId);
+        return Objects.equals(clientId, shoppingCart.clientId);
     }
 
     @Override

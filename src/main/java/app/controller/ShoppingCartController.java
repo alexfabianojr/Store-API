@@ -1,10 +1,10 @@
 package app.controller;
 
 import app.module.entities.Client;
-import app.module.entities.SalesList;
+import app.module.entities.ShoppingCart;
 import app.module.entities.Seller;
 import app.repository.ClientRepository;
-import app.repository.SalesListRepository;
+import app.repository.ShoppingCartRepository;
 import app.repository.SellersRepository;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -21,10 +21,10 @@ import java.util.List;
 @NoArgsConstructor
 @RestController
 @RequestMapping(value = "/store-api/saleslist")
-public class SalesListController {
+public class ShoppingCartController {
 
     @Autowired
-    private SalesListRepository salesListRepository;
+    private ShoppingCartRepository shoppingCartRepository;
 
     @Autowired
     private ClientRepository clientRepository;
@@ -33,22 +33,22 @@ public class SalesListController {
     private SellersRepository sellersRepository;
 
     @GetMapping(path = "/findall")
-    public List<SalesList> findAll() {
-        return salesListRepository.findAll();
+    public List<ShoppingCart> findAll() {
+        return shoppingCartRepository.findAll();
     }
 
     @GetMapping(path = "/{id}")
-    public ResponseEntity<SalesList> findById(@PathVariable("id") Long id) {
-        return salesListRepository.findById(id)
+    public ResponseEntity<ShoppingCart> findById(@PathVariable("id") Long id) {
+        return shoppingCartRepository.findById(id)
                 .map(record -> ResponseEntity.ok().body(record))
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping(path = "/save")
-    public SalesList saveNewSalesList(@RequestBody SalesList salesList) {
-        SalesList newSale = salesListRepository.save(salesList);
-        Long idClient = newSale.getClientId();
-        Long idSeller = newSale.getSalespeopleId();
+    public ShoppingCart saveNewSalesList(@RequestBody ShoppingCart shoppingCart) {
+        ShoppingCart newShoppingCart = shoppingCartRepository.save(shoppingCart);
+        Long idClient = newShoppingCart.getClientId();
+        Long idSeller = newShoppingCart.getSalespeopleId();
         try {
             if (clientRepository.findById(idClient).isPresent()) {
                 Client client = clientRepository
@@ -58,7 +58,7 @@ public class SalesListController {
                         .findById(idClient)
                         .get()
                         .getShoppingList();
-                longs.add(newSale.getId());
+                longs.add(newShoppingCart.getId());
                 client.setShoppingList(longs);
                 clientRepository.save(client);
             } else {
@@ -72,7 +72,7 @@ public class SalesListController {
                         .findById(idSeller)
                         .get()
                         .getSalesIdList();
-                longs.add(newSale.getId());
+                longs.add(newShoppingCart.getId());
                 seller.setSalesIdList(longs);
                 sellersRepository.save(seller);
             } else {
@@ -81,17 +81,17 @@ public class SalesListController {
         } catch (Exception e) {
             System.out.println(Arrays.toString(e.getStackTrace()));
         }
-        return newSale;
+        return newShoppingCart;
     }
 
     @PostMapping(value = "/{id}")
-    public ResponseEntity<SalesList> update(@PathVariable("id") Long id,
-                                 @RequestBody SalesList salesList) {
-        return salesListRepository.findById(id)
+    public ResponseEntity<ShoppingCart> update(@PathVariable("id") Long id,
+                                               @RequestBody ShoppingCart shoppingCart) {
+        return shoppingCartRepository.findById(id)
                 .map(record -> {
-                    record.setSalespeopleId(salesList.getSalespeopleId());
-                    record.setSales(salesList.getSales());
-                    SalesList update = salesListRepository.save(record);
+                    record.setSalespeopleId(shoppingCart.getSalespeopleId());
+                    record.setSales(shoppingCart.getSales());
+                    ShoppingCart update = shoppingCartRepository.save(record);
                     return ResponseEntity.ok().body(update);
                 }).orElse(ResponseEntity.notFound().build());
     }
