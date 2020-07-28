@@ -7,7 +7,17 @@
 4. Each control has a List<> that is updated as the entities are persisted<br>
 5. First the get methods look for the data in the List<><br>
 If the data ins't there they look into the database<br>
+6. Client and Seller models have a List of IDs Long and they are supose to keep the IDs os shopping carts<br>
+So when a shopping cart is persisted the program must read the ID of the seller and the ID of client and find in database theirs data and update theirs shopping carts ID's List<br>
+In that way the seller keeps tracks of all his sells and client of all his shopping carts in the store
 </p>
+<br>
+<h4>Entites and pojos models properties</h4>
+<ul>Client: Long id, String name, char genre, String email and ArrayList Long IDs</ul>
+<ul>Product: Long id, String code, String name, String description, Double price, int quantity, Double weight and Double dimension</ul>
+<ul>Seller: Long id, String name, String email, String password, char genre, LocalDate birthdate, Localdate companyStartDate and Arraylist Long IDs</ul>
+<ul>Shopping Cart: Long id, Long seller's id, Long client's id, ArrayList of Sale </ul>
+<ul> Sale POJO: Long productId and int productQuantity</ul>
 <br>
 <h4>Client Endpoints</h4>
 <ul>Find all clients -> http://localhost:8080///store-api/client/findall</ul>
