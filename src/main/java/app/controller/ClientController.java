@@ -61,7 +61,7 @@ public class ClientController {
         return ResponseEntity.notFound().build();
     }
 
-    @PostMapping(path = "/newclient")
+    @PostMapping(path = "/save")
     public Client save(@RequestBody Client client) {
         Client newClient = clientRepository.save(client);
         clients.add(Math.toIntExact(newClient.getId()), newClient);

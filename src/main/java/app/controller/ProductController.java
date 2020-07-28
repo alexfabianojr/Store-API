@@ -14,7 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @RestController
-@RequestMapping(value = "/store-api/products")
+@RequestMapping(value = "/store-api/product")
 public class ProductController {
 
     @Autowired
@@ -30,7 +30,7 @@ public class ProductController {
         return products;
     }
 
-    @GetMapping(path = "/{id}")
+    @GetMapping(path = "/findbyid/{id}")
     public ResponseEntity<Product> findById(@PathVariable Long id) {
         if (products.isEmpty()) {
             products = productRepository.findAll();
@@ -54,7 +54,7 @@ public class ProductController {
         return newProduct;
     }
 
-    @PostMapping(value = "/{id}")
+    @PostMapping(value = "/update/{id}")
     public ResponseEntity update(@PathVariable("id") Long id,
                                  @RequestBody Product product) {
         int index;

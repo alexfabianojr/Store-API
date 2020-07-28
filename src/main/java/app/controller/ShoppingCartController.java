@@ -20,7 +20,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @RestController
-@RequestMapping(value = "/store-api/saleslist")
+@RequestMapping(value = "/store-api/shoppingcart")
 public class ShoppingCartController {
 
     @Autowired
@@ -42,7 +42,7 @@ public class ShoppingCartController {
         return shoppingCarts;
     }
 
-    @GetMapping(path = "/{id}")
+    @GetMapping(path = "/findbyid/{id}")
     public ResponseEntity<ShoppingCart> findById(@PathVariable("id") Long id) {
         if (shoppingCarts.isEmpty()) {
             shoppingCarts = shoppingCartRepository.findAll();
@@ -103,7 +103,7 @@ public class ShoppingCartController {
         return newShoppingCart;
     }
 
-    @PostMapping(value = "/{id}")
+    @PostMapping(value = "/update/{id}")
     public ResponseEntity<ShoppingCart> update(@PathVariable("id") Long id,
                                                @RequestBody ShoppingCart shoppingCart) {
         int index;
