@@ -2,43 +2,70 @@ package app.controller;
 
 import app.module.entities.Product;
 import app.repository.ProductRepository;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
+@AllArgsConstructor
+@NoArgsConstructor
 @RestController
 @RequestMapping(value = "/store-api/products")
 public class ProductController {
 
     @Autowired
-    private final ProductRepository productRepository;
+    private ProductRepository productRepository;
 
-    public ProductController(ProductRepository productRepository) {
-        this.productRepository = productRepository;
-    }
+    private List<Product> products = new ArrayList<>();
 
     @GetMapping(path = "/findall")
     public List<Product> findAll(){
-        return productRepository.findAll();
+        if (products.isEmpty()) {
+            products = productRepository.findAll();
+        }
+        return products;
     }
 
     @GetMapping(path = "/{id}")
     public ResponseEntity<Product> findById(@PathVariable Long id) {
-        return productRepository.findById(id)
-                .map(record -> ResponseEntity.ok().body(record))
-                .orElse(ResponseEntity.notFound().build());
+        if (products.isEmpty()) {
+            products = productRepository.findAll();
+        }
+        if (products.get(Math.toIntExact(id)).getId().equals(id)) {
+            return ResponseEntity.ok().body(products.get(Math.toIntExact(id)));
+        } else {
+            for (Product p : products) {
+                if (p.getId().equals(id)) {
+                    return ResponseEntity.ok().body(p);
+                }
+            }
+        }
+        return ResponseEntity.notFound().build();
     }
 
     @PostMapping(path = "/save")
     public Product save(@RequestBody Product product) {
-        return productRepository.save(product);
+        Product newProduct = productRepository.save(product);
+        products.add(Math.toIntExact(newProduct.getId()), newProduct);
+        return newProduct;
     }
 
     @PostMapping(value = "/{id}")
     public ResponseEntity update(@PathVariable("id") Long id,
                                  @RequestBody Product product) {
+        int index;
+        if (products.isEmpty()) {
+            products = productRepository.findAll();
+        }
+        if (products.get(Math.toIntExact(id)).getId().equals(id)) {
+            index = Math.toIntExact(id);
+        } else {
+            index = products.indexOf(productRepository.findById(id).get());
+        }
         return productRepository.findById(id)
                 .map(record -> {
                     record.setCode(product.getCode());
@@ -49,6 +76,8 @@ public class ProductController {
                     record.setWeight(product.getWeight());
                     record.setDimension(product.getDimension());
                     Product update = productRepository.save(record);
+                    products.remove(index);
+                    products.add(index, update);
                     return ResponseEntity.ok().body(update);
                 }).orElse(ResponseEntity.notFound().build());
     }

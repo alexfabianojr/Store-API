@@ -32,20 +32,38 @@ public class ShoppingCartController {
     @Autowired
     private SellersRepository sellersRepository;
 
+    private List<ShoppingCart> shoppingCarts = new ArrayList<>();
+
     @GetMapping(path = "/findall")
     public List<ShoppingCart> findAll() {
-        return shoppingCartRepository.findAll();
+        if (shoppingCarts.isEmpty()) {
+            shoppingCarts = shoppingCartRepository.findAll();
+        }
+        return shoppingCarts;
     }
 
     @GetMapping(path = "/{id}")
     public ResponseEntity<ShoppingCart> findById(@PathVariable("id") Long id) {
-        return shoppingCartRepository.findById(id)
-                .map(record -> ResponseEntity.ok().body(record))
-                .orElse(ResponseEntity.notFound().build());
+        if (shoppingCarts.isEmpty()) {
+            shoppingCarts = shoppingCartRepository.findAll();
+        }
+        if (shoppingCarts.get(Math.toIntExact(id)).getId().equals(id)) {
+            return ResponseEntity.ok().body(shoppingCarts.get(Math.toIntExact(id)));
+        } else {
+            for (ShoppingCart sc : shoppingCarts) {
+                if (sc.getId().equals(id)) {
+                    return ResponseEntity.ok().body(sc);
+                }
+            }
+        }
+        return ResponseEntity.notFound().build();
     }
 
     @PostMapping(path = "/save")
     public ShoppingCart saveNewSalesList(@RequestBody ShoppingCart shoppingCart) {
+        if (shoppingCarts.isEmpty()) {
+            shoppingCarts = shoppingCartRepository.findAll();
+        }
         ShoppingCart newShoppingCart = shoppingCartRepository.save(shoppingCart);
         Long idClient = newShoppingCart.getClientId();
         Long idSeller = newShoppingCart.getSalespeopleId();
@@ -81,17 +99,29 @@ public class ShoppingCartController {
         } catch (Exception e) {
             System.out.println(Arrays.toString(e.getStackTrace()));
         }
+        shoppingCarts.add(Math.toIntExact(newShoppingCart.getId()), newShoppingCart);
         return newShoppingCart;
     }
 
     @PostMapping(value = "/{id}")
     public ResponseEntity<ShoppingCart> update(@PathVariable("id") Long id,
                                                @RequestBody ShoppingCart shoppingCart) {
+        int index;
+        if (shoppingCarts.isEmpty()) {
+            shoppingCarts = shoppingCartRepository.findAll();
+        }
+        if (shoppingCarts.get(Math.toIntExact(id)).getId().equals(id)) {
+            index = Math.toIntExact(id);
+        } else {
+            index = shoppingCarts.indexOf(shoppingCartRepository.findById(id).get());
+        }
         return shoppingCartRepository.findById(id)
                 .map(record -> {
                     record.setSalespeopleId(shoppingCart.getSalespeopleId());
                     record.setSales(shoppingCart.getSales());
                     ShoppingCart update = shoppingCartRepository.save(record);
+                    shoppingCarts.remove(index);
+                    shoppingCarts.add(index, update);
                     return ResponseEntity.ok().body(update);
                 }).orElse(ResponseEntity.notFound().build());
     }

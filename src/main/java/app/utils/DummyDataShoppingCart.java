@@ -69,8 +69,8 @@ public class DummyDataShoppingCart {
         shoppingCart.add(shoppingCart3);
         shoppingCart.add(shoppingCart4);
 
-        for (ShoppingCart shoppingCart : shoppingCart) {
-            ShoppingCart shoppingCartSaved = shoppingCartRepository.save(shoppingCart);
+        for (ShoppingCart shoppingCartData : shoppingCart) {
+            ShoppingCart shoppingCartSaved = shoppingCartRepository.save(shoppingCartData);
             System.out.println(shoppingCartSaved.getId());
         }
     }

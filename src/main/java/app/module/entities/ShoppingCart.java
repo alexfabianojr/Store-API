@@ -7,20 +7,20 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 @Entity
-@Table(name = "tb_sales")
+@Table(name = "tb_shoppingcarts")
 public class ShoppingCart {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "sales_salespeopleId")
+    @Column(name = "sc_salespeopleId")
     private Long salespeopleId;
 
-    @Column(name = "sales_clientId")
+    @Column(name = "sc_clientId")
     private Long clientId;
 
-    @Column(name = "sales_sales")
+    @Column(name = "sc_scIdsList")
     private ArrayList<Sale> sales = new ArrayList<>();
 
     public ShoppingCart() {
