@@ -26,6 +26,8 @@ public class SellersController {
     public List<Seller> findAll() {
         if (sellers.isEmpty()) {
             sellers = sellersRepository.findAll();
+        } else if (sellers.size() != sellersRepository.count()) {
+            sellers = sellersRepository.findAll();
         }
         return sellers;
     }
@@ -33,6 +35,8 @@ public class SellersController {
     @GetMapping(path = "/findbyid/{id}")
     public ResponseEntity<Seller> findById(@PathVariable("id") Long id) {
         if (sellers.isEmpty()) {
+            sellers = sellersRepository.findAll();
+        } else if (sellers.size() != sellersRepository.count()) {
             sellers = sellersRepository.findAll();
         }
         if (sellers.get(Math.toIntExact(id)).getId().equals(id)) {
@@ -50,7 +54,12 @@ public class SellersController {
     @PostMapping(path = "/save")
     public Seller save(@RequestBody Seller seller) {
         Seller newSeller = sellersRepository.save(seller);
-        sellers.add(Math.toIntExact(newSeller.getId()), newSeller);
+        if (sellers.isEmpty()) {
+            sellers = sellersRepository.findAll();
+        } else if (sellers.size() != sellersRepository.count()) {
+            sellers = sellersRepository.findAll();
+        }
+        sellers.add(newSeller);
         return newSeller;
     }
 
@@ -59,6 +68,8 @@ public class SellersController {
                                          @RequestBody Seller seller) {
         int index;
         if (sellers.isEmpty()) {
+            sellers = sellersRepository.findAll();
+        } else if (sellers.size() != sellersRepository.count()) {
             sellers = sellersRepository.findAll();
         }
         if (sellers.get(Math.toIntExact(id)).getId().equals(id)) {

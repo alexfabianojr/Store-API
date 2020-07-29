@@ -38,6 +38,8 @@ public class ShoppingCartController {
     public List<ShoppingCart> findAll() {
         if (shoppingCarts.isEmpty()) {
             shoppingCarts = shoppingCartRepository.findAll();
+        } else if (shoppingCarts.size() != shoppingCartRepository.count()) {
+            shoppingCarts = shoppingCartRepository.findAll();
         }
         return shoppingCarts;
     }
@@ -45,6 +47,8 @@ public class ShoppingCartController {
     @GetMapping(path = "/findbyid/{id}")
     public ResponseEntity<ShoppingCart> findById(@PathVariable("id") Long id) {
         if (shoppingCarts.isEmpty()) {
+            shoppingCarts = shoppingCartRepository.findAll();
+        } else if (shoppingCarts.size() != shoppingCartRepository.count()) {
             shoppingCarts = shoppingCartRepository.findAll();
         }
         if (shoppingCarts.get(Math.toIntExact(id)).getId().equals(id)) {
@@ -62,6 +66,8 @@ public class ShoppingCartController {
     @PostMapping(path = "/save")
     public ShoppingCart saveNewSalesList(@RequestBody ShoppingCart shoppingCart) {
         if (shoppingCarts.isEmpty()) {
+            shoppingCarts = shoppingCartRepository.findAll();
+        } else if (shoppingCarts.size() != shoppingCartRepository.count()) {
             shoppingCarts = shoppingCartRepository.findAll();
         }
         ShoppingCart newShoppingCart = shoppingCartRepository.save(shoppingCart);
@@ -99,7 +105,7 @@ public class ShoppingCartController {
         } catch (Exception e) {
             System.out.println(Arrays.toString(e.getStackTrace()));
         }
-        shoppingCarts.add(Math.toIntExact(newShoppingCart.getId()), newShoppingCart);
+        shoppingCarts.add(newShoppingCart);
         return newShoppingCart;
     }
 
@@ -108,6 +114,8 @@ public class ShoppingCartController {
                                                @RequestBody ShoppingCart shoppingCart) {
         int index;
         if (shoppingCarts.isEmpty()) {
+            shoppingCarts = shoppingCartRepository.findAll();
+        } else if (shoppingCarts.size() != shoppingCartRepository.count()) {
             shoppingCarts = shoppingCartRepository.findAll();
         }
         if (shoppingCarts.get(Math.toIntExact(id)).getId().equals(id)) {

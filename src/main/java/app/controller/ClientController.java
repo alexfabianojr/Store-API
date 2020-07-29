@@ -27,6 +27,8 @@ public class ClientController {
     public List<Client> findAll() {
         if (clients.isEmpty()) {
             clients = clientRepository.findAll();
+        } else if (clients.size() != clientRepository.count()) {
+            clients = clientRepository.findAll();
         }
             return clients;
     }
@@ -34,6 +36,8 @@ public class ClientController {
     @GetMapping(path = "/findbyid/{id}")
     public ResponseEntity<Client> findById(@PathVariable("id") Long id) {
         if (clients.isEmpty()) {
+            clients = clientRepository.findAll();
+        } else if (clients.size() != clientRepository.count()) {
             clients = clientRepository.findAll();
         }
         if (clients.get(Math.toIntExact(id)).getId().equals(id)) {
@@ -52,6 +56,8 @@ public class ClientController {
     public ResponseEntity<Client> findByEmail(@PathVariable("email") String email) {
         if (clients.isEmpty()) {
             clients = clientRepository.findAll();
+        } else if (clients.size() != clientRepository.count()) {
+            clients = clientRepository.findAll();
         }
         for (Client c : clients) {
             if (c.getEmail().equals(email)) {
@@ -64,7 +70,12 @@ public class ClientController {
     @PostMapping(path = "/save")
     public Client save(@RequestBody Client client) {
         Client newClient = clientRepository.save(client);
-        clients.add(Math.toIntExact(newClient.getId()), newClient);
+        if (clients.isEmpty()) {
+            clients = clientRepository.findAll();
+        } else if (clients.size() != clientRepository.count()) {
+            clients = clientRepository.findAll();
+        }
+        clients.add(newClient);
         return newClient;
     }
 
@@ -73,6 +84,8 @@ public class ClientController {
                                          @RequestBody Client client) {
         int index;
         if (clients.isEmpty()) {
+            clients = clientRepository.findAll();
+        } else if (clients.size() != clientRepository.count()) {
             clients = clientRepository.findAll();
         }
         if (clients.get(Math.toIntExact(id)).getId().equals(id)) {
@@ -98,6 +111,8 @@ public class ClientController {
                                                   @RequestBody Client newData) {
         int index;
         if (clients.isEmpty()) {
+            clients = clientRepository.findAll();
+        } else if (clients.size() != clientRepository.count()) {
             clients = clientRepository.findAll();
         }
         if (clients.get(Math.toIntExact(id)).getId().equals(id)) {

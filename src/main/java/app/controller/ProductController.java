@@ -26,6 +26,8 @@ public class ProductController {
     public List<Product> findAll(){
         if (products.isEmpty()) {
             products = productRepository.findAll();
+        } else if (products.size() != productRepository.count()) {
+            products = productRepository.findAll();
         }
         return products;
     }
@@ -33,6 +35,8 @@ public class ProductController {
     @GetMapping(path = "/findbyid/{id}")
     public ResponseEntity<Product> findById(@PathVariable Long id) {
         if (products.isEmpty()) {
+            products = productRepository.findAll();
+        } else if (products.size() != productRepository.count()) {
             products = productRepository.findAll();
         }
         if (products.get(Math.toIntExact(id)).getId().equals(id)) {
@@ -50,7 +54,12 @@ public class ProductController {
     @PostMapping(path = "/save")
     public Product save(@RequestBody Product product) {
         Product newProduct = productRepository.save(product);
-        products.add(Math.toIntExact(newProduct.getId()), newProduct);
+        if (products.isEmpty()) {
+            products = productRepository.findAll();
+        } else if (products.size() != productRepository.count()) {
+            products = productRepository.findAll();
+        }
+        products.add(newProduct);
         return newProduct;
     }
 
@@ -59,6 +68,8 @@ public class ProductController {
                                  @RequestBody Product product) {
         int index;
         if (products.isEmpty()) {
+            products = productRepository.findAll();
+        } else if (products.size() != productRepository.count()) {
             products = productRepository.findAll();
         }
         if (products.get(Math.toIntExact(id)).getId().equals(id)) {
