@@ -2,6 +2,7 @@ package app.controller;
 
 import app.module.entities.Client;
 import app.repository.ClientRepository;
+import app.services.ReturnClientsByGenre;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -65,6 +66,16 @@ public class ClientController {
             }
         }
         return ResponseEntity.notFound().build();
+    }
+
+    @GetMapping(path = "/findbygenre/{genre}")
+    public List<Client> findByGenre(@PathVariable("genre") char genre) {
+        if (clients.isEmpty()) {
+            clients = clientRepository.findAll();
+        } else if (clients.size() != clientRepository.count()) {
+            clients = clientRepository.findAll();
+        }
+        return ReturnClientsByGenre.find(clients, genre);
     }
 
     @PostMapping(path = "/save")

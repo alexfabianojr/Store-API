@@ -2,6 +2,7 @@ package app.controller;
 
 import app.module.entities.Seller;
 import app.repository.SellersRepository;
+import app.services.ReturnSellersByGenre;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +50,16 @@ public class SellersController {
             }
         }
         return ResponseEntity.notFound().build();
+    }
+
+    @GetMapping(path = "/findbygenre/{genre}")
+    public List<Seller> findByGenre(@PathVariable("genre") char genre) {
+        if (sellers.isEmpty()) {
+            sellers = sellersRepository.findAll();
+        } else if (sellers.size() != sellersRepository.count()) {
+            sellers = sellersRepository.findAll();
+        }
+        return ReturnSellersByGenre.find(sellers, genre);
     }
 
     @PostMapping(path = "/save")
