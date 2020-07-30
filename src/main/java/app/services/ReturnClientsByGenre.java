@@ -4,19 +4,15 @@ import app.module.entities.Client;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 @Service
 public class ReturnClientsByGenre {
-    public static List<Client> find(List<Client> clients_input, char genre) {
-        List<Client> clients_output = new ArrayList<>();
-        for (Client c : clients_input) {
-            if (c.getGenre() == genre) {
-                clients_output.add(c);
-            }
-        }
-        return clients_output;
+    public static List<Client> find(List<Client> clients, char genre) {
+       return clients.stream()
+               .filter(e -> e.getGenre() == genre)
+               .collect(Collectors.toList());
     }
 }
