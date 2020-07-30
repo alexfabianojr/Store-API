@@ -64,49 +64,40 @@ public class ShoppingCartController {
     }
 
     @PostMapping(path = "/save")
-    public ShoppingCart saveNewSalesList(@RequestBody ShoppingCart shoppingCart) {
+    public ResponseEntity<ShoppingCart> saveNewSalesList(@RequestBody ShoppingCart shoppingCart) {
         if (shoppingCarts.isEmpty()) {
             shoppingCarts = shoppingCartRepository.findAll();
         } else if (shoppingCarts.size() != shoppingCartRepository.count()) {
             shoppingCarts = shoppingCartRepository.findAll();
         }
-        ShoppingCart newShoppingCart = shoppingCartRepository.save(shoppingCart);
-        Long idClient = newShoppingCart.getClientId();
-        Long idSeller = newShoppingCart.getSalespeopleId();
-        try {
-            if (clientRepository.findById(idClient).isPresent()) {
-                Client client = clientRepository
-                        .findById(idClient)
-                        .get();
-                ArrayList<Long> longs = clientRepository
-                        .findById(idClient)
-                        .get()
-                        .getShoppingList();
-                longs.add(newShoppingCart.getId());
-                client.setShoppingList(longs);
-                clientRepository.save(client);
-            } else {
-                throw new Exception();
-            }
-            if (sellersRepository.findById(idSeller).isPresent()){
-                Seller seller = sellersRepository
-                        .findById(idSeller)
-                        .get();
-                ArrayList<Long> longs = sellersRepository
-                        .findById(idSeller)
-                        .get()
-                        .getSalesIdList();
-                longs.add(newShoppingCart.getId());
-                seller.setSalesIdList(longs);
-                sellersRepository.save(seller);
-            } else {
-                throw new Exception();
-            }
-        } catch (Exception e) {
-            System.out.println(Arrays.toString(e.getStackTrace()));
+        if (!sellersRepository.existsById(shoppingCart.getSalespeopleId())) {
+            return ResponseEntity.notFound().build();
+        } else if (!clientRepository.existsById(shoppingCart.getClientId())) {
+            return ResponseEntity.notFound().build();
         }
+        ShoppingCart newShoppingCart = shoppingCartRepository.save(shoppingCart);
+        Client client = clientRepository
+                .findById(newShoppingCart.getClientId())
+                .get();
+        ArrayList<Long> clientIDs = clientRepository
+                .findById(newShoppingCart.getClientId())
+                .get()
+                .getShoppingList();
+        clientIDs.add(newShoppingCart.getId());
+        client.setShoppingList(clientIDs);
+        clientRepository.save(client);
+        Seller seller = sellersRepository
+                .findById(newShoppingCart.getSalespeopleId())
+                .get();
+        ArrayList<Long> sellerIDs = sellersRepository
+                .findById(newShoppingCart.getSalespeopleId())
+                .get()
+                .getSalesIdList();
+        sellerIDs.add(newShoppingCart.getId());
+        seller.setSalesIdList(sellerIDs);
+        sellersRepository.save(seller);
         shoppingCarts.add(newShoppingCart);
-        return newShoppingCart;
+        return ResponseEntity.ok().body(newShoppingCart);
     }
 
     @PostMapping(value = "/update/{id}")

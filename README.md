@@ -31,6 +31,7 @@ In that way the seller keeps tracks of all his sells and client of all his shopp
 <h4>Product Endpoints</h4>
 <ul>Find all products -> http://localhost:8080///store-api/product/findall</ul>
 <ul>Find product by ID -> http://localhost:8080///store-api/product/findbyid/{id}</ul>
+<ul>Find product by code (String) -> http://localhost:8080///store-api/product/findbycode/{code}</ul>
 <ul>Save new product -> http://localhost:8080///store-api/product/save</ul>
 <ul>Update product -> http://localhost:8080///store-api/product/update/{id}</ul>
 <br>

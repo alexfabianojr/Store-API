@@ -51,6 +51,21 @@ public class ProductController {
         return ResponseEntity.notFound().build();
     }
 
+    @GetMapping(path = "/findbycode/{code}")
+    public ResponseEntity<Product> findByCode(@PathVariable String code) {
+        if (products.isEmpty()) {
+            products = productRepository.findAll();
+        } else if (products.size() != productRepository.count()) {
+            products = productRepository.findAll();
+        }
+        for (Product p : products) {
+            if (p.getCode().equals(code)) {
+                return ResponseEntity.ok().body(p);
+            }
+        }
+        return ResponseEntity.notFound().build();
+    }
+
     @PostMapping(path = "/save")
     public Product save(@RequestBody Product product) {
         Product newProduct = productRepository.save(product);
