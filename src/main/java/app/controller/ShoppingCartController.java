@@ -33,19 +33,21 @@ public class ShoppingCartController {
 
     private List<ShoppingCart> shoppingCarts = new ArrayList<>();
 
-    @GetMapping(path = "/findall")
-    public List<ShoppingCart> findAll() {
+    public void sanitycheck() {
         if (shoppingCarts.isEmpty() || shoppingCarts.size() != shoppingCartRepository.count()) {
             shoppingCarts = shoppingCartRepository.findAll();
         }
+    }
+
+    @GetMapping(path = "/findall")
+    public List<ShoppingCart> findAll() {
+        sanitycheck();
         return shoppingCarts;
     }
 
     @GetMapping(path = "/findbyid/{id}")
     public ResponseEntity<ShoppingCart> findById(@PathVariable("id") Long id) {
-        if (shoppingCarts.isEmpty() || shoppingCarts.size() != shoppingCartRepository.count()) {
-            shoppingCarts = shoppingCartRepository.findAll();
-        }
+        sanitycheck();
         if (shoppingCarts.get(Math.toIntExact(id)).getId().equals(id)) {
             return ResponseEntity.ok().body(shoppingCarts.get(Math.toIntExact(id)));
         } else {
@@ -60,9 +62,7 @@ public class ShoppingCartController {
 
     @PostMapping(path = "/save")
     public ResponseEntity<ShoppingCart> saveNewSalesList(@RequestBody ShoppingCart shoppingCart) {
-        if (shoppingCarts.isEmpty() || shoppingCarts.size() != shoppingCartRepository.count()) {
-            shoppingCarts = shoppingCartRepository.findAll();
-        }
+        sanitycheck();
         if (clientRepository.findById(shoppingCart.getClientId()).isPresent()
                 && sellersRepository.findById(shoppingCart.getSalespeopleId()).isPresent()) {
             ShoppingCart newShoppingCart = shoppingCartRepository.save(shoppingCart);
@@ -95,9 +95,7 @@ public class ShoppingCartController {
     @PostMapping(value = "/update/{id}")
     public ResponseEntity<ShoppingCart> update(@PathVariable("id") Long id,
                                                @RequestBody ShoppingCart shoppingCart) {
-        if (shoppingCarts.isEmpty() || shoppingCarts.size() != shoppingCartRepository.count()) {
-            shoppingCarts = shoppingCartRepository.findAll();
-        }
+        sanitycheck();
         int index = (shoppingCarts.get(Math.toIntExact(id)).getId().equals(id))
                 ? Math.toIntExact(id) : shoppingCarts.indexOf(shoppingCartRepository.findById(id).orElseThrow());
         return shoppingCartRepository.findById(id)

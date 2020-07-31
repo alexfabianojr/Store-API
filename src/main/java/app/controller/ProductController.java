@@ -22,19 +22,21 @@ public class ProductController {
 
     private List<Product> products = new ArrayList<>();
 
-    @GetMapping(path = "/findall")
-    public List<Product> findAll(){
+    public void sanitycheck() {
         if (products.isEmpty() || (products.size() != productRepository.count())) {
             products = productRepository.findAll();
         }
+    }
+
+    @GetMapping(path = "/findall")
+    public List<Product> findAll(){
+        sanitycheck();
         return products;
     }
 
     @GetMapping(path = "/findbyid/{id}")
     public ResponseEntity<Product> findById(@PathVariable Long id) {
-        if (products.isEmpty() || (products.size() != productRepository.count())) {
-            products = productRepository.findAll();
-        }
+        sanitycheck();
         if (products.get(Math.toIntExact(id)).getId().equals(id)) {
             return ResponseEntity.ok().body(products.get(Math.toIntExact(id)));
         } else {
@@ -47,9 +49,7 @@ public class ProductController {
 
     @GetMapping(path = "/findbycode/{code}")
     public ResponseEntity<Product> findByCode(@PathVariable String code) {
-        if (products.isEmpty() || (products.size() != productRepository.count())) {
-            products = productRepository.findAll();
-        }
+        sanitycheck();
         for (Product p : products) {
             if (p.getCode().equals(code)) return ResponseEntity.ok().body(p);
         }
@@ -58,10 +58,8 @@ public class ProductController {
 
     @PostMapping(path = "/save")
     public Product save(@RequestBody Product product) {
+        sanitycheck();
         Product newProduct = productRepository.save(product);
-        if (products.isEmpty() || (products.size() != productRepository.count())) {
-            products = productRepository.findAll();
-        }
         products.add(newProduct);
         return newProduct;
     }
@@ -69,9 +67,7 @@ public class ProductController {
     @PostMapping(value = "/update/{id}")
     public ResponseEntity<Product> update(@PathVariable("id") Long id,
                                  @RequestBody Product product) {
-        if (products.isEmpty() || (products.size() != productRepository.count())) {
-            products = productRepository.findAll();
-        }
+        sanitycheck();
         int index = (products.get(Math.toIntExact(id)).getId().equals(id))
                 ? Math.toIntExact(id) : products.indexOf(productRepository.findById(id).orElseThrow());
         return productRepository.findById(id)

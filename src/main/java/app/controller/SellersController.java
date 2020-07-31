@@ -23,19 +23,21 @@ public class SellersController {
 
     private List<Seller> sellers = new ArrayList<>();
 
-    @GetMapping(path = "/findall")
-    public List<Seller> findAll() {
+    public void sanitycheck() {
         if (sellers.isEmpty() || sellers.size() != sellersRepository.count()) {
             sellers = sellersRepository.findAll();
         }
+    }
+
+    @GetMapping(path = "/findall")
+    public List<Seller> findAll() {
+        sanitycheck();
         return sellers;
     }
 
     @GetMapping(path = "/findbyid/{id}")
     public ResponseEntity<Seller> findById(@PathVariable("id") Long id) {
-        if (sellers.isEmpty() || sellers.size() != sellersRepository.count()) {
-            sellers = sellersRepository.findAll();
-        }
+        sanitycheck();
         if (sellers.get(Math.toIntExact(id)).getId().equals(id)) {
             return ResponseEntity.ok().body(sellers.get(Math.toIntExact(id)));
         } else {
@@ -48,18 +50,14 @@ public class SellersController {
 
     @GetMapping(path = "/findbygenre/{genre}")
     public List<Seller> findByGenre(@PathVariable("genre") char genre) {
-        if (sellers.isEmpty() || sellers.size() != sellersRepository.count()) {
-            sellers = sellersRepository.findAll();
-        }
+        sanitycheck();
         return ReturnSellersByGenre.find(sellers, genre);
     }
 
     @PostMapping(path = "/save")
     public Seller save(@RequestBody Seller seller) {
+        sanitycheck();
         Seller newSeller = sellersRepository.save(seller);
-        if (sellers.isEmpty() || sellers.size() != sellersRepository.count()) {
-            sellers = sellersRepository.findAll();
-        }
         sellers.add(newSeller);
         return newSeller;
     }
@@ -67,9 +65,7 @@ public class SellersController {
     @PostMapping(value = "/update/{id}")
     public ResponseEntity<Seller> update(@PathVariable("id") Long id,
                                          @RequestBody Seller seller) {
-        if (sellers.isEmpty() || sellers.size() != sellersRepository.count()) {
-            sellers = sellersRepository.findAll();
-        }
+        sanitycheck();
         int index = (sellers.get(Math.toIntExact(id)).getId().equals(id))
                 ? Math.toIntExact(id) : sellers.indexOf(sellersRepository.findById(id).orElseThrow());
         return sellersRepository.findById(id)

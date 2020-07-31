@@ -24,36 +24,31 @@ public class ClientController {
 
     private List<Client> clients = new ArrayList<>();
 
+    public void sanitycheck() {
+        if (clients.isEmpty() || clients.size() != clientRepository.count()) clients = clientRepository.findAll();
+    }
+
     @GetMapping(path = "/findall")
     public List<Client> findAll() {
-        if (clients.isEmpty() || clients.size() != clientRepository.count()) {
-            clients = clientRepository.findAll();
-        }
+        sanitycheck();
         return clients;
     }
 
     @GetMapping(path = "/findbyid/{id}")
     public ResponseEntity<Client> findById(@PathVariable("id") Long id) {
-        if (clients.isEmpty() || clients.size() != clientRepository.count()) {
-            clients = clientRepository.findAll();
-        }
+        sanitycheck();
         if (clients.get(Math.toIntExact(id)).getId().equals(id)) {
             return ResponseEntity.ok().body(clients.get(Math.toIntExact(id)));
         } else {
-            for (Client c : clients) {
-                if (c.getId().equals(id)) {
-                    return ResponseEntity.ok().body(c);
-                }
-            }
+            return clientRepository.findById(id).map(e -> {
+                return ResponseEntity.ok().body(e);
+            }).orElse(ResponseEntity.notFound().build());
         }
-        return ResponseEntity.notFound().build();
     }
 
     @GetMapping(path = "/findbyemail/{email}")
     public ResponseEntity<Client> findByEmail(@PathVariable("email") String email) {
-        if (clients.isEmpty() || clients.size() != clientRepository.count()) {
-            clients = clientRepository.findAll();
-        }
+        sanitycheck();
         for (Client c : clients) {
             if (c.getEmail().equals(email)) return ResponseEntity.ok().body(c);
         }
@@ -62,18 +57,14 @@ public class ClientController {
 
     @GetMapping(path = "/findbygenre/{genre}")
     public List<Client> findByGenre(@PathVariable("genre") char genre) {
-        if (clients.isEmpty() || clients.size() != clientRepository.count()) {
-            clients = clientRepository.findAll();
-        }
+        sanitycheck();
         return ReturnClientsByGenre.find(clients, genre);
     }
 
     @PostMapping(path = "/save")
     public Client save(@RequestBody Client client) {
+        sanitycheck();
         Client newClient = clientRepository.save(client);
-        if (clients.isEmpty() || clients.size() != clientRepository.count()) {
-            clients = clientRepository.findAll();
-        }
         clients.add(newClient);
         return newClient;
     }
@@ -81,9 +72,7 @@ public class ClientController {
     @PostMapping(value = "/update-alldata/{id}")
     public ResponseEntity<Client> update(@PathVariable("id") Long id,
                                          @RequestBody Client client) {
-        if (clients.isEmpty() || clients.size() != clientRepository.count()) {
-            clients = clientRepository.findAll();
-        }
+        sanitycheck();
         int index = (clients.get(Math.toIntExact(id)).getId().equals(id))
                 ? Math.toIntExact(id) : clients.indexOf(clientRepository.findById(id).get());
         return clientRepository.findById(id)
@@ -102,9 +91,7 @@ public class ClientController {
     @PostMapping(value = "/update-email/{id}")
     public ResponseEntity<Client> emailUpdateById(@PathVariable("id") Long id,
                                                   @RequestBody Client newData) {
-        if (clients.isEmpty() || clients.size() != clientRepository.count()) {
-            clients = clientRepository.findAll();
-        }
+        sanitycheck();
         int index = (clients.get(Math.toIntExact(id)).getId().equals(id))
                 ? Math.toIntExact(id) : clients.indexOf(clientRepository.findById(id).get());
         if (clientRepository.findById(id).isPresent()) {
