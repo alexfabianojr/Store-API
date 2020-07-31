@@ -25,9 +25,7 @@ public class SellersController {
 
     @GetMapping(path = "/findall")
     public List<Seller> findAll() {
-        if (sellers.isEmpty()) {
-            sellers = sellersRepository.findAll();
-        } else if (sellers.size() != sellersRepository.count()) {
+        if (sellers.isEmpty() || sellers.size() != sellersRepository.count()) {
             sellers = sellersRepository.findAll();
         }
         return sellers;
@@ -35,18 +33,14 @@ public class SellersController {
 
     @GetMapping(path = "/findbyid/{id}")
     public ResponseEntity<Seller> findById(@PathVariable("id") Long id) {
-        if (sellers.isEmpty()) {
-            sellers = sellersRepository.findAll();
-        } else if (sellers.size() != sellersRepository.count()) {
+        if (sellers.isEmpty() || sellers.size() != sellersRepository.count()) {
             sellers = sellersRepository.findAll();
         }
         if (sellers.get(Math.toIntExact(id)).getId().equals(id)) {
             return ResponseEntity.ok().body(sellers.get(Math.toIntExact(id)));
         } else {
             for (Seller sl : sellers) {
-                if (sl.getId().equals(id)) {
-                    return ResponseEntity.ok().body(sl);
-                }
+                if (sl.getId().equals(id)) return ResponseEntity.ok().body(sl);
             }
         }
         return ResponseEntity.notFound().build();
@@ -54,9 +48,7 @@ public class SellersController {
 
     @GetMapping(path = "/findbygenre/{genre}")
     public List<Seller> findByGenre(@PathVariable("genre") char genre) {
-        if (sellers.isEmpty()) {
-            sellers = sellersRepository.findAll();
-        } else if (sellers.size() != sellersRepository.count()) {
+        if (sellers.isEmpty() || sellers.size() != sellersRepository.count()) {
             sellers = sellersRepository.findAll();
         }
         return ReturnSellersByGenre.find(sellers, genre);
@@ -65,9 +57,7 @@ public class SellersController {
     @PostMapping(path = "/save")
     public Seller save(@RequestBody Seller seller) {
         Seller newSeller = sellersRepository.save(seller);
-        if (sellers.isEmpty()) {
-            sellers = sellersRepository.findAll();
-        } else if (sellers.size() != sellersRepository.count()) {
+        if (sellers.isEmpty() || sellers.size() != sellersRepository.count()) {
             sellers = sellersRepository.findAll();
         }
         sellers.add(newSeller);
@@ -77,17 +67,11 @@ public class SellersController {
     @PostMapping(value = "/update/{id}")
     public ResponseEntity<Seller> update(@PathVariable("id") Long id,
                                          @RequestBody Seller seller) {
-        int index;
-        if (sellers.isEmpty()) {
-            sellers = sellersRepository.findAll();
-        } else if (sellers.size() != sellersRepository.count()) {
+        if (sellers.isEmpty() || sellers.size() != sellersRepository.count()) {
             sellers = sellersRepository.findAll();
         }
-        if (sellers.get(Math.toIntExact(id)).getId().equals(id)) {
-            index = Math.toIntExact(id);
-        } else {
-            index = sellers.indexOf(sellersRepository.findById(id).get());
-        }
+        int index = (sellers.get(Math.toIntExact(id)).getId().equals(id))
+                ? Math.toIntExact(id) : sellers.indexOf(sellersRepository.findById(id).orElseThrow());
         return sellersRepository.findById(id)
                 .map(record -> {
                     record.setName(seller.getName());

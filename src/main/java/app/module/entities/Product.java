@@ -2,6 +2,7 @@ package app.module.entities;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -10,6 +11,7 @@ import java.util.Objects;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@EqualsAndHashCode
 @Entity
 @Table(name = "tb_products")
 public class Product {

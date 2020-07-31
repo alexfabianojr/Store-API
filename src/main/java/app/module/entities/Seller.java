@@ -1,7 +1,9 @@
 package app.module.entities;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -12,6 +14,7 @@ import java.util.Objects;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@EqualsAndHashCode
 @Entity
 @Table(name = "tb_sellers")
 public class Seller {
@@ -32,9 +35,11 @@ public class Seller {
     @Column(name = "sp_genre")
     private char genre;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     @Column(name = "sp_birthdate")
     private LocalDate birthdate;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     @Column(name = "sp_companyStartDate")
     private LocalDate companyStartDate;
 

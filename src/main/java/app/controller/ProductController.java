@@ -24,9 +24,7 @@ public class ProductController {
 
     @GetMapping(path = "/findall")
     public List<Product> findAll(){
-        if (products.isEmpty()) {
-            products = productRepository.findAll();
-        } else if (products.size() != productRepository.count()) {
+        if (products.isEmpty() || (products.size() != productRepository.count())) {
             products = productRepository.findAll();
         }
         return products;
@@ -34,18 +32,14 @@ public class ProductController {
 
     @GetMapping(path = "/findbyid/{id}")
     public ResponseEntity<Product> findById(@PathVariable Long id) {
-        if (products.isEmpty()) {
-            products = productRepository.findAll();
-        } else if (products.size() != productRepository.count()) {
+        if (products.isEmpty() || (products.size() != productRepository.count())) {
             products = productRepository.findAll();
         }
         if (products.get(Math.toIntExact(id)).getId().equals(id)) {
             return ResponseEntity.ok().body(products.get(Math.toIntExact(id)));
         } else {
             for (Product p : products) {
-                if (p.getId().equals(id)) {
-                    return ResponseEntity.ok().body(p);
-                }
+                if (p.getId().equals(id)) return ResponseEntity.ok().body(p);
             }
         }
         return ResponseEntity.notFound().build();
@@ -53,15 +47,11 @@ public class ProductController {
 
     @GetMapping(path = "/findbycode/{code}")
     public ResponseEntity<Product> findByCode(@PathVariable String code) {
-        if (products.isEmpty()) {
-            products = productRepository.findAll();
-        } else if (products.size() != productRepository.count()) {
+        if (products.isEmpty() || (products.size() != productRepository.count())) {
             products = productRepository.findAll();
         }
         for (Product p : products) {
-            if (p.getCode().equals(code)) {
-                return ResponseEntity.ok().body(p);
-            }
+            if (p.getCode().equals(code)) return ResponseEntity.ok().body(p);
         }
         return ResponseEntity.notFound().build();
     }
@@ -69,9 +59,7 @@ public class ProductController {
     @PostMapping(path = "/save")
     public Product save(@RequestBody Product product) {
         Product newProduct = productRepository.save(product);
-        if (products.isEmpty()) {
-            products = productRepository.findAll();
-        } else if (products.size() != productRepository.count()) {
+        if (products.isEmpty() || (products.size() != productRepository.count())) {
             products = productRepository.findAll();
         }
         products.add(newProduct);
@@ -79,19 +67,13 @@ public class ProductController {
     }
 
     @PostMapping(value = "/update/{id}")
-    public ResponseEntity update(@PathVariable("id") Long id,
+    public ResponseEntity<Product> update(@PathVariable("id") Long id,
                                  @RequestBody Product product) {
-        int index;
-        if (products.isEmpty()) {
-            products = productRepository.findAll();
-        } else if (products.size() != productRepository.count()) {
+        if (products.isEmpty() || (products.size() != productRepository.count())) {
             products = productRepository.findAll();
         }
-        if (products.get(Math.toIntExact(id)).getId().equals(id)) {
-            index = Math.toIntExact(id);
-        } else {
-            index = products.indexOf(productRepository.findById(id).get());
-        }
+        int index = (products.get(Math.toIntExact(id)).getId().equals(id))
+                ? Math.toIntExact(id) : products.indexOf(productRepository.findById(id).orElseThrow());
         return productRepository.findById(id)
                 .map(record -> {
                     record.setCode(product.getCode());

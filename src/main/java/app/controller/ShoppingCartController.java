@@ -13,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 
@@ -36,9 +35,7 @@ public class ShoppingCartController {
 
     @GetMapping(path = "/findall")
     public List<ShoppingCart> findAll() {
-        if (shoppingCarts.isEmpty()) {
-            shoppingCarts = shoppingCartRepository.findAll();
-        } else if (shoppingCarts.size() != shoppingCartRepository.count()) {
+        if (shoppingCarts.isEmpty() || shoppingCarts.size() != shoppingCartRepository.count()) {
             shoppingCarts = shoppingCartRepository.findAll();
         }
         return shoppingCarts;
@@ -46,9 +43,7 @@ public class ShoppingCartController {
 
     @GetMapping(path = "/findbyid/{id}")
     public ResponseEntity<ShoppingCart> findById(@PathVariable("id") Long id) {
-        if (shoppingCarts.isEmpty()) {
-            shoppingCarts = shoppingCartRepository.findAll();
-        } else if (shoppingCarts.size() != shoppingCartRepository.count()) {
+        if (shoppingCarts.isEmpty() || shoppingCarts.size() != shoppingCartRepository.count()) {
             shoppingCarts = shoppingCartRepository.findAll();
         }
         if (shoppingCarts.get(Math.toIntExact(id)).getId().equals(id)) {
@@ -65,55 +60,46 @@ public class ShoppingCartController {
 
     @PostMapping(path = "/save")
     public ResponseEntity<ShoppingCart> saveNewSalesList(@RequestBody ShoppingCart shoppingCart) {
-        if (shoppingCarts.isEmpty()) {
-            shoppingCarts = shoppingCartRepository.findAll();
-        } else if (shoppingCarts.size() != shoppingCartRepository.count()) {
+        if (shoppingCarts.isEmpty() || shoppingCarts.size() != shoppingCartRepository.count()) {
             shoppingCarts = shoppingCartRepository.findAll();
         }
-        if (!sellersRepository.existsById(shoppingCart.getSalespeopleId())) {
-            return ResponseEntity.notFound().build();
-        } else if (!clientRepository.existsById(shoppingCart.getClientId())) {
-            return ResponseEntity.notFound().build();
+        if (clientRepository.findById(shoppingCart.getClientId()).isPresent()
+                && sellersRepository.findById(shoppingCart.getSalespeopleId()).isPresent()) {
+            ShoppingCart newShoppingCart = shoppingCartRepository.save(shoppingCart);
+            Client client = clientRepository
+                    .findById(newShoppingCart.getClientId())
+                    .orElseThrow();
+            ArrayList<Long> clientIDs = clientRepository
+                    .findById(newShoppingCart.getClientId())
+                    .orElseThrow()
+                    .getShoppingList();
+            clientIDs.add(newShoppingCart.getId());
+            client.setShoppingList(clientIDs);
+            clientRepository.save(client);
+            Seller seller = sellersRepository
+                    .findById(newShoppingCart.getSalespeopleId())
+                    .orElseThrow();
+            ArrayList<Long> sellerIDs = sellersRepository
+                    .findById(newShoppingCart.getSalespeopleId())
+                    .orElseThrow()
+                    .getSalesIdList();
+            sellerIDs.add(newShoppingCart.getId());
+            seller.setSalesIdList(sellerIDs);
+            sellersRepository.save(seller);
+            shoppingCarts.add(newShoppingCart);
+            return ResponseEntity.ok().body(newShoppingCart);
         }
-        ShoppingCart newShoppingCart = shoppingCartRepository.save(shoppingCart);
-        Client client = clientRepository
-                .findById(newShoppingCart.getClientId())
-                .get();
-        ArrayList<Long> clientIDs = clientRepository
-                .findById(newShoppingCart.getClientId())
-                .get()
-                .getShoppingList();
-        clientIDs.add(newShoppingCart.getId());
-        client.setShoppingList(clientIDs);
-        clientRepository.save(client);
-        Seller seller = sellersRepository
-                .findById(newShoppingCart.getSalespeopleId())
-                .get();
-        ArrayList<Long> sellerIDs = sellersRepository
-                .findById(newShoppingCart.getSalespeopleId())
-                .get()
-                .getSalesIdList();
-        sellerIDs.add(newShoppingCart.getId());
-        seller.setSalesIdList(sellerIDs);
-        sellersRepository.save(seller);
-        shoppingCarts.add(newShoppingCart);
-        return ResponseEntity.ok().body(newShoppingCart);
+        return ResponseEntity.notFound().build();
     }
 
     @PostMapping(value = "/update/{id}")
     public ResponseEntity<ShoppingCart> update(@PathVariable("id") Long id,
                                                @RequestBody ShoppingCart shoppingCart) {
-        int index;
-        if (shoppingCarts.isEmpty()) {
-            shoppingCarts = shoppingCartRepository.findAll();
-        } else if (shoppingCarts.size() != shoppingCartRepository.count()) {
+        if (shoppingCarts.isEmpty() || shoppingCarts.size() != shoppingCartRepository.count()) {
             shoppingCarts = shoppingCartRepository.findAll();
         }
-        if (shoppingCarts.get(Math.toIntExact(id)).getId().equals(id)) {
-            index = Math.toIntExact(id);
-        } else {
-            index = shoppingCarts.indexOf(shoppingCartRepository.findById(id).get());
-        }
+        int index = (shoppingCarts.get(Math.toIntExact(id)).getId().equals(id))
+                ? Math.toIntExact(id) : shoppingCarts.indexOf(shoppingCartRepository.findById(id).orElseThrow());
         return shoppingCartRepository.findById(id)
                 .map(record -> {
                     record.setSalespeopleId(shoppingCart.getSalespeopleId());

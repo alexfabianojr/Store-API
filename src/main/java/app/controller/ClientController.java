@@ -26,19 +26,15 @@ public class ClientController {
 
     @GetMapping(path = "/findall")
     public List<Client> findAll() {
-        if (clients.isEmpty()) {
-            clients = clientRepository.findAll();
-        } else if (clients.size() != clientRepository.count()) {
+        if (clients.isEmpty() || clients.size() != clientRepository.count()) {
             clients = clientRepository.findAll();
         }
-            return clients;
+        return clients;
     }
 
     @GetMapping(path = "/findbyid/{id}")
     public ResponseEntity<Client> findById(@PathVariable("id") Long id) {
-        if (clients.isEmpty()) {
-            clients = clientRepository.findAll();
-        } else if (clients.size() != clientRepository.count()) {
+        if (clients.isEmpty() || clients.size() != clientRepository.count()) {
             clients = clientRepository.findAll();
         }
         if (clients.get(Math.toIntExact(id)).getId().equals(id)) {
@@ -55,24 +51,18 @@ public class ClientController {
 
     @GetMapping(path = "/findbyemail/{email}")
     public ResponseEntity<Client> findByEmail(@PathVariable("email") String email) {
-        if (clients.isEmpty()) {
-            clients = clientRepository.findAll();
-        } else if (clients.size() != clientRepository.count()) {
+        if (clients.isEmpty() || clients.size() != clientRepository.count()) {
             clients = clientRepository.findAll();
         }
         for (Client c : clients) {
-            if (c.getEmail().equals(email)) {
-                return ResponseEntity.ok().body(c);
-            }
+            if (c.getEmail().equals(email)) return ResponseEntity.ok().body(c);
         }
         return ResponseEntity.notFound().build();
     }
 
     @GetMapping(path = "/findbygenre/{genre}")
     public List<Client> findByGenre(@PathVariable("genre") char genre) {
-        if (clients.isEmpty()) {
-            clients = clientRepository.findAll();
-        } else if (clients.size() != clientRepository.count()) {
+        if (clients.isEmpty() || clients.size() != clientRepository.count()) {
             clients = clientRepository.findAll();
         }
         return ReturnClientsByGenre.find(clients, genre);
@@ -81,9 +71,7 @@ public class ClientController {
     @PostMapping(path = "/save")
     public Client save(@RequestBody Client client) {
         Client newClient = clientRepository.save(client);
-        if (clients.isEmpty()) {
-            clients = clientRepository.findAll();
-        } else if (clients.size() != clientRepository.count()) {
+        if (clients.isEmpty() || clients.size() != clientRepository.count()) {
             clients = clientRepository.findAll();
         }
         clients.add(newClient);
@@ -93,17 +81,11 @@ public class ClientController {
     @PostMapping(value = "/update-alldata/{id}")
     public ResponseEntity<Client> update(@PathVariable("id") Long id,
                                          @RequestBody Client client) {
-        int index;
-        if (clients.isEmpty()) {
-            clients = clientRepository.findAll();
-        } else if (clients.size() != clientRepository.count()) {
+        if (clients.isEmpty() || clients.size() != clientRepository.count()) {
             clients = clientRepository.findAll();
         }
-        if (clients.get(Math.toIntExact(id)).getId().equals(id)) {
-            index = Math.toIntExact(id);
-        } else {
-            index = clients.indexOf(clientRepository.findById(id).get());
-        }
+        int index = (clients.get(Math.toIntExact(id)).getId().equals(id))
+                ? Math.toIntExact(id) : clients.indexOf(clientRepository.findById(id).get());
         return clientRepository.findById(id)
                 .map(record -> {
                     record.setName(client.getName());
@@ -120,17 +102,11 @@ public class ClientController {
     @PostMapping(value = "/update-email/{id}")
     public ResponseEntity<Client> emailUpdateById(@PathVariable("id") Long id,
                                                   @RequestBody Client newData) {
-        int index;
-        if (clients.isEmpty()) {
-            clients = clientRepository.findAll();
-        } else if (clients.size() != clientRepository.count()) {
+        if (clients.isEmpty() || clients.size() != clientRepository.count()) {
             clients = clientRepository.findAll();
         }
-        if (clients.get(Math.toIntExact(id)).getId().equals(id)) {
-            index = Math.toIntExact(id);
-        } else {
-            index = clients.indexOf(clientRepository.findById(id).get());
-        }
+        int index = (clients.get(Math.toIntExact(id)).getId().equals(id))
+                ? Math.toIntExact(id) : clients.indexOf(clientRepository.findById(id).get());
         if (clientRepository.findById(id).isPresent()) {
             Client oldData = clientRepository.findById(id).get();
             return clientRepository.findById(id)
