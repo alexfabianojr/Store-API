@@ -1,5 +1,9 @@
 package app.module.entities;
 
+import app.module.pojo.Address;
+import app.module.pojo.Contact;
+import app.module.pojo.Employee;
+import app.module.pojo.Person;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,25 +27,13 @@ public class Seller {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "sp_name")
-    private String name;
+    Person person;
 
-    @Column(name = "sp_email")
-    private String email;
+    Contact contact;
 
-    @Column(name = "sp_password")
-    private String password;
+    Address address;
 
-    @Column(name = "sp_genre")
-    private char genre;
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
-    @Column(name = "sp_birthdate")
-    private LocalDate birthdate;
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
-    @Column(name = "sp_companyStartDate")
-    private LocalDate companyStartDate;
+    Employee employee;
 
     @Column(name = "sp_salesIdList")
     private ArrayList<Long> salesIdList = new ArrayList<Long>();

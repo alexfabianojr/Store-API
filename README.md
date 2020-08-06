@@ -24,6 +24,7 @@ In that way the seller keeps tracks of all his sells and client of all his shopp
 <ul>Find client by ID -> http://localhost:8080///store-api/client/findbyid/{id}</ul>
 <ul>Find client by email -> http://localhost:8080///store-api/client/findbyemail/{email}</ul>
 <ul>Find all clients by genre -> http://localhost:8080///store-api/client/findbygenre/{genre}</ul>
+<ul>Find client by name -> http://localhost:8080///store-api/client/findbyname/{name}</ul>
 <ul>Save new client -> http://localhost:8080///store-api/client/save</ul>
 <ul>Update client -> http://localhost:8080///store-api/client/update-alldata/{id}</ul>
 <ul>Update client email -> http://localhost:8080///store-api/client/update-email/{id}</ul>
@@ -37,8 +38,10 @@ In that way the seller keeps tracks of all his sells and client of all his shopp
 <br>
 <h4>Seller Endpoints</h4>
 <ul>Find all sellers -> http://localhost:8080///store-api/seller/findall</ul>
-<ul>Find seller by ID -> http://localhost:8080///store-api/seller/findbyid/{id}</ul>
-<ul>Find seller by genre (char) -> http://localhost:8080///store-api/seller/findbygenre/{genre}</ul>
+<ul>Find seller by ID -> http://localhost:8080///store-api/seller/findby-id/{id}</ul>
+<ul>Find seller by name -> http://localhost:8080///store-api/seller/findby-name/{name}</ul>
+<ul>Find seller by email -> http://localhost:8080///store-api/seller/findby-email/{email}</ul>
+<ul>Find seller by genre (char) -> http://localhost:8080///store-api/seller/findby-genre/{genre}</ul>
 <ul>Save new seller -> http://localhost:8080///store-api/seller/save</ul>
 <ul>Update seller -> http://localhost:8080///store-api/seller/update/{id}</ul>
 <br>

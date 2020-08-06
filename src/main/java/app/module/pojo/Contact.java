@@ -11,7 +11,8 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Data
 @EqualsAndHashCode
-public class Sale implements Serializable {
-    private int productId;
-    private int productQuantity;
+public class Contact implements Serializable {
+    private String email;
+    private String cellPhone;
+    private String homephone;
 }

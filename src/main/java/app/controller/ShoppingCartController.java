@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -31,9 +32,9 @@ public class ShoppingCartController {
     @Autowired
     private SellersRepository sellersRepository;
 
-    private List<ShoppingCart> shoppingCarts = new ArrayList<>();
+    private List<ShoppingCart> shoppingCarts = Collections.synchronizedList(new ArrayList<>());
 
-    public void sanitycheck() {
+    public synchronized void cache() {
         if (shoppingCarts.isEmpty() || shoppingCarts.size() != shoppingCartRepository.count()) {
             shoppingCarts = shoppingCartRepository.findAll();
         }
@@ -41,28 +42,20 @@ public class ShoppingCartController {
 
     @GetMapping(path = "/findall")
     public List<ShoppingCart> findAll() {
-        sanitycheck();
+        cache();
         return shoppingCarts;
     }
 
     @GetMapping(path = "/findbyid/{id}")
     public ResponseEntity<ShoppingCart> findById(@PathVariable("id") Long id) {
-        sanitycheck();
-        if (shoppingCarts.get(Math.toIntExact(id)).getId().equals(id)) {
-            return ResponseEntity.ok().body(shoppingCarts.get(Math.toIntExact(id)));
-        } else {
-            for (ShoppingCart sc : shoppingCarts) {
-                if (sc.getId().equals(id)) {
-                    return ResponseEntity.ok().body(sc);
-                }
-            }
-        }
-        return ResponseEntity.notFound().build();
+        return shoppingCartRepository.findById(id)
+                .map(e -> { return ResponseEntity.ok().body(e); })
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping(path = "/save")
     public ResponseEntity<ShoppingCart> saveNewSalesList(@RequestBody ShoppingCart shoppingCart) {
-        sanitycheck();
+        cache();
         if (clientRepository.findById(shoppingCart.getClientId()).isPresent()
                 && sellersRepository.findById(shoppingCart.getSalespeopleId()).isPresent()) {
             ShoppingCart newShoppingCart = shoppingCartRepository.save(shoppingCart);
@@ -95,7 +88,7 @@ public class ShoppingCartController {
     @PostMapping(value = "/update/{id}")
     public ResponseEntity<ShoppingCart> update(@PathVariable("id") Long id,
                                                @RequestBody ShoppingCart shoppingCart) {
-        sanitycheck();
+        cache();
         int index = (shoppingCarts.get(Math.toIntExact(id)).getId().equals(id))
                 ? Math.toIntExact(id) : shoppingCarts.indexOf(shoppingCartRepository.findById(id).orElseThrow());
         return shoppingCartRepository.findById(id)

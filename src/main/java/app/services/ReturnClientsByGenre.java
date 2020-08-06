@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 public class ReturnClientsByGenre {
     public static List<Client> find(List<Client> clients, char genre) {
        return clients.stream()
-               .filter(e -> e.getGenre() == genre)
+               .filter(e -> e.getPerson().getGenre() == genre)
                .collect(Collectors.toList());
     }
 }

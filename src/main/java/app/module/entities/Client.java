@@ -1,5 +1,8 @@
 package app.module.entities;
 
+import app.module.pojo.Address;
+import app.module.pojo.Contact;
+import app.module.pojo.Person;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -21,15 +24,15 @@ public class Client {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "client_name")
-    private String name;
+    @Column(name = "cl_person")
+    Person person;
 
-    @Column(name = "client_genre")
-    private char genre;
+    @Column(name = "cl_contact")
+    Contact contact;
 
-    @Column(name = "client_email")
-    private String email;
+    @Column(name = "cl_address")
+    Address address;
 
-    @Column(name = "client_shoppingList")
+    @Column(name = "cl_shoppingcart_stories")
     private ArrayList<Long> shoppingList = new ArrayList<Long>();
 }

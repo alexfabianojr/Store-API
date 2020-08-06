@@ -2,6 +2,7 @@ package app.controller;
 
 import app.module.entities.Seller;
 import app.repository.SellersRepository;
+import app.services.DocumentValidator;
 import app.services.ReturnSellersByGenre;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -10,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @AllArgsConstructor
@@ -21,9 +23,9 @@ public class SellersController {
     @Autowired
     private SellersRepository sellersRepository;
 
-    private List<Seller> sellers = new ArrayList<>();
+    private List<Seller> sellers = Collections.synchronizedList(new ArrayList<>());
 
-    public void sanitycheck() {
+    public synchronized void cache() {
         if (sellers.isEmpty() || sellers.size() != sellersRepository.count()) {
             sellers = sellersRepository.findAll();
         }
@@ -31,41 +33,55 @@ public class SellersController {
 
     @GetMapping(path = "/findall")
     public List<Seller> findAll() {
-        sanitycheck();
+        cache();
         return sellers;
     }
 
-    @GetMapping(path = "/findbyid/{id}")
+    @GetMapping(path = "/findby-id/{id}")
     public ResponseEntity<Seller> findById(@PathVariable("id") Long id) {
-        sanitycheck();
-        if (sellers.get(Math.toIntExact(id)).getId().equals(id)) {
-            return ResponseEntity.ok().body(sellers.get(Math.toIntExact(id)));
-        } else {
-            for (Seller sl : sellers) {
-                if (sl.getId().equals(id)) return ResponseEntity.ok().body(sl);
-            }
+        return sellersRepository.findById(id)
+                .map(e -> { return ResponseEntity.ok().body(e); })
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping(path = "/findby-email/{email}")
+    public ResponseEntity<Seller> findByEmail(@PathVariable("email") String email) {
+        cache();
+        for (Seller sl : sellers) {
+            if (sl.getContact().getEmail().equals(email)) return ResponseEntity.ok().body(sl);
         }
         return ResponseEntity.notFound().build();
     }
 
-    @GetMapping(path = "/findbygenre/{genre}")
+    @GetMapping(path = "/findby-name/{name}")
+    public ResponseEntity<Seller> findByName(@PathVariable("name") String name) {
+        cache();
+        for (Seller sl : sellers) {
+            if (sl.getPerson().getName().equals(name)) return ResponseEntity.ok().body(sl);
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @GetMapping(path = "/findby-genre/{genre}")
     public List<Seller> findByGenre(@PathVariable("genre") char genre) {
-        sanitycheck();
+        cache();
         return ReturnSellersByGenre.find(sellers, genre);
     }
 
     @PostMapping(path = "/save")
-    public Seller save(@RequestBody Seller seller) {
-        sanitycheck();
-        Seller newSeller = sellersRepository.save(seller);
-        sellers.add(newSeller);
-        return newSeller;
+    public ResponseEntity<Seller> save(@RequestBody Seller seller) {
+        if (DocumentValidator.isCPF(seller.getPerson().getCpf())) {
+            cache();
+            Seller newSeller = sellersRepository.save(seller);
+            sellers.add(newSeller);
+            return ;
+        }
     }
 
     @PostMapping(value = "/update/{id}")
     public ResponseEntity<Seller> update(@PathVariable("id") Long id,
                                          @RequestBody Seller seller) {
-        sanitycheck();
+        cache();
         int index = (sellers.get(Math.toIntExact(id)).getId().equals(id))
                 ? Math.toIntExact(id) : sellers.indexOf(sellersRepository.findById(id).orElseThrow());
         return sellersRepository.findById(id)

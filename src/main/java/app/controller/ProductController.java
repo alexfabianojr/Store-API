@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @AllArgsConstructor
@@ -20,36 +21,30 @@ public class ProductController {
     @Autowired
     private ProductRepository productRepository;
 
-    private List<Product> products = new ArrayList<>();
+    private List<Product> products = Collections.synchronizedList(new ArrayList<>());
 
-    public void sanitycheck() {
+    public synchronized void cache() {
         if (products.isEmpty() || (products.size() != productRepository.count())) {
             products = productRepository.findAll();
         }
     }
 
     @GetMapping(path = "/findall")
-    public List<Product> findAll(){
-        sanitycheck();
+    public List<Product> findAll() {
+        cache();
         return products;
     }
 
     @GetMapping(path = "/findbyid/{id}")
     public ResponseEntity<Product> findById(@PathVariable Long id) {
-        sanitycheck();
-        if (products.get(Math.toIntExact(id)).getId().equals(id)) {
-            return ResponseEntity.ok().body(products.get(Math.toIntExact(id)));
-        } else {
-            for (Product p : products) {
-                if (p.getId().equals(id)) return ResponseEntity.ok().body(p);
-            }
-        }
-        return ResponseEntity.notFound().build();
+        return productRepository.findById(id)
+                .map(e -> { return ResponseEntity.ok().body(e); })
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping(path = "/findbycode/{code}")
     public ResponseEntity<Product> findByCode(@PathVariable String code) {
-        sanitycheck();
+        cache();
         for (Product p : products) {
             if (p.getCode().equals(code)) return ResponseEntity.ok().body(p);
         }
@@ -58,7 +53,7 @@ public class ProductController {
 
     @PostMapping(path = "/save")
     public Product save(@RequestBody Product product) {
-        sanitycheck();
+        cache();
         Product newProduct = productRepository.save(product);
         products.add(newProduct);
         return newProduct;
@@ -66,8 +61,8 @@ public class ProductController {
 
     @PostMapping(value = "/update/{id}")
     public ResponseEntity<Product> update(@PathVariable("id") Long id,
-                                 @RequestBody Product product) {
-        sanitycheck();
+                                          @RequestBody Product product) {
+        cache();
         int index = (products.get(Math.toIntExact(id)).getId().equals(id))
                 ? Math.toIntExact(id) : products.indexOf(productRepository.findById(id).orElseThrow());
         return productRepository.findById(id)
