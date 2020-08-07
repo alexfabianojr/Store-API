@@ -12,12 +12,12 @@ import java.io.Serializable;
 @Data
 @EqualsAndHashCode
 public class Address implements Serializable {
-    private String cep;
     private String country;
+    private String cep;
     private String state;
     private String city;
-    private String street;
     private String neighborhood;
+    private String street;
     private String complement;
     private String number;
     private boolean mainAddress;

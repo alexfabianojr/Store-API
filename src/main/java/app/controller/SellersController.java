@@ -71,31 +71,32 @@ public class SellersController {
     @PostMapping(path = "/save")
     public ResponseEntity<Seller> save(@RequestBody Seller seller) {
         if (DocumentValidator.isCPF(seller.getPerson().getCpf())) {
-            cache();
             Seller newSeller = sellersRepository.save(seller);
+            cache();
             sellers.add(newSeller);
-            return ;
+            return ResponseEntity.ok().body(newSeller);
+        } else {
+            return ResponseEntity.notFound().build();
         }
     }
 
     @PostMapping(value = "/update/{id}")
     public ResponseEntity<Seller> update(@PathVariable("id") Long id,
                                          @RequestBody Seller seller) {
-        cache();
-        int index = (sellers.get(Math.toIntExact(id)).getId().equals(id))
-                ? Math.toIntExact(id) : sellers.indexOf(sellersRepository.findById(id).orElseThrow());
         return sellersRepository.findById(id)
-                .map(record -> {
-                    record.setName(seller.getName());
-                    record.setEmail(seller.getEmail());
-                    record.setPassword(seller.getPassword());
-                    record.setGenre(seller.getGenre());
-                    record.setBirthdate(seller.getBirthdate());
-                    record.setCompanyStartDate(seller.getCompanyStartDate());
-                    record.setSalesIdList(seller.getSalesIdList());
-                    Seller update = sellersRepository.save(record);
-                    sellers.remove(index);
-                    sellers.add(index, update);
+                .map(s -> {
+                    s.setId(id);
+                    s.setPerson(seller.getPerson());
+                    s.setContact(seller.getContact());
+                    s.setAddress(seller.getAddress());
+                    s.setEmployee(seller.getEmployee());
+                    s.setSalesIdList(sellersRepository.findById(id)
+                            .orElseThrow()
+                            .getSalesIdList());
+                    cache();
+                    sellers.remove(sellersRepository.findById(id).orElseThrow());
+                    Seller update = sellersRepository.save(s);
+                    sellers.add(Math.toIntExact(id), update);
                     return ResponseEntity.ok().body(update);
                 }).orElse(ResponseEntity.notFound().build());
     }

@@ -62,21 +62,19 @@ public class ProductController {
     @PostMapping(value = "/update/{id}")
     public ResponseEntity<Product> update(@PathVariable("id") Long id,
                                           @RequestBody Product product) {
-        cache();
-        int index = (products.get(Math.toIntExact(id)).getId().equals(id))
-                ? Math.toIntExact(id) : products.indexOf(productRepository.findById(id).orElseThrow());
         return productRepository.findById(id)
-                .map(record -> {
-                    record.setCode(product.getCode());
-                    record.setName(product.getName());
-                    record.setDescription(product.getDescription());
-                    record.setPrice(product.getPrice());
-                    record.setQuantity(product.getQuantity());
-                    record.setWeight(product.getWeight());
-                    record.setDimension(product.getDimension());
-                    Product update = productRepository.save(record);
-                    products.remove(index);
-                    products.add(index, update);
+                .map(p -> {
+                    p.setCode(product.getCode());
+                    p.setName(product.getName());
+                    p.setDescription(product.getDescription());
+                    p.setPrice(product.getPrice());
+                    p.setQuantity(product.getQuantity());
+                    p.setWeight(product.getWeight());
+                    p.setDimension(product.getDimension());
+                    cache();
+                    products.remove(productRepository.findById(id).orElseThrow());
+                     Product update = productRepository.save(p);
+                    products.add(Math.toIntExact(id), update);
                     return ResponseEntity.ok().body(update);
                 }).orElse(ResponseEntity.notFound().build());
     }

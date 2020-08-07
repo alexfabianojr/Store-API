@@ -92,11 +92,13 @@ public class ClientController {
                     c.setPerson(client.getPerson());
                     c.setAddress(client.getAddress());
                     c.setContact(client.getContact());
-                    c.setShoppingList(clientRepository.findById(id).orElseThrow().getShoppingList());
-                    Client update = clientRepository.save(c);
-                    cache();
+                    c.setShoppingList(clientRepository.findById(id)
+                            .orElseThrow()
+                            .getShoppingList());
                     int index = (clients.get(Math.toIntExact(id)).getId().equals(id))
                             ? Math.toIntExact(id) : clients.indexOf(clientRepository.findById(id).orElseThrow());
+                    Client update = clientRepository.save(c);
+                    cache();
                     clients.remove(index);
                     clients.add(index, update);
                     return ResponseEntity.ok().body(update);
@@ -119,12 +121,10 @@ public class ClientController {
                         c.setContact(contact);
                         c.setAddress(oldData.getAddress());
                         c.setShoppingList(oldData.getShoppingList());
-                        Client update = clientRepository.save(c);
                         cache();
-                        int index = (clients.get(Math.toIntExact(id)).getId().equals(id))
-                                ? Math.toIntExact(id) : clients.indexOf(clientRepository.findById(id).orElseThrow());
-                        clients.remove(index);
-                        clients.add(index, update);
+                        clients.remove(clientRepository.findById(id).orElseThrow());
+                        Client update = clientRepository.save(c);
+                        clients.add(Math.toIntExact(id), update);
                         return ResponseEntity.ok().body(update);
                     }).orElse(ResponseEntity.notFound().build());
         } else {

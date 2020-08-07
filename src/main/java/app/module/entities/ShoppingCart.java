@@ -7,6 +7,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -17,7 +18,6 @@ import java.util.Objects;
 @Entity
 @Table(name = "tb_shoppingcarts")
 public class ShoppingCart {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -27,6 +27,12 @@ public class ShoppingCart {
 
     @Column(name = "sc_clientId")
     private Long clientId;
+
+    @Column(name = "sc_date")
+    LocalDate date;
+
+    @Column(name = "sc_bill")
+    private String bill;
 
     @Column(name = "sc_scIdsList")
     private ArrayList<Sale> sales = new ArrayList<>();

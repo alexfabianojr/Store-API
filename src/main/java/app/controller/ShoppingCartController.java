@@ -88,16 +88,14 @@ public class ShoppingCartController {
     @PostMapping(value = "/update/{id}")
     public ResponseEntity<ShoppingCart> update(@PathVariable("id") Long id,
                                                @RequestBody ShoppingCart shoppingCart) {
-        cache();
-        int index = (shoppingCarts.get(Math.toIntExact(id)).getId().equals(id))
-                ? Math.toIntExact(id) : shoppingCarts.indexOf(shoppingCartRepository.findById(id).orElseThrow());
         return shoppingCartRepository.findById(id)
-                .map(record -> {
-                    record.setSalespeopleId(shoppingCart.getSalespeopleId());
-                    record.setSales(shoppingCart.getSales());
-                    ShoppingCart update = shoppingCartRepository.save(record);
-                    shoppingCarts.remove(index);
-                    shoppingCarts.add(index, update);
+                .map(sc -> {
+                    sc.setSalespeopleId(shoppingCart.getSalespeopleId());
+                    sc.setSales(shoppingCart.getSales());
+                    cache();
+                    shoppingCarts.remove(shoppingCartRepository.findById(id).orElseThrow());
+                    ShoppingCart update = shoppingCartRepository.save(sc);
+                    shoppingCarts.add(Math.toIntExact(id), update);
                     return ResponseEntity.ok().body(update);
                 }).orElse(ResponseEntity.notFound().build());
     }

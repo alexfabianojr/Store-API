@@ -6,6 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.Objects;
 
 @AllArgsConstructor
@@ -15,7 +16,6 @@ import java.util.Objects;
 @Entity
 @Table(name = "tb_products")
 public class Product {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -26,11 +26,14 @@ public class Product {
     @Column(name = "product_name")
     private String name;
 
+    @Column(name = "product_manufacturer")
+    private String manufacturer;
+
     @Column(name = "product_description")
     private String description;
 
     @Column(name = "product_price")
-    private Double price;
+    private BigDecimal price;
 
     @Column(name = "product_quantity")
     private int quantity;
