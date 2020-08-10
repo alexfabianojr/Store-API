@@ -7,6 +7,7 @@ import app.repository.ClientRepository;
 import app.repository.ShoppingCartRepository;
 import app.repository.SellersRepository;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
 @RestController
 @RequestMapping(value = "/store-api/shoppingcart")
 public class ShoppingCartController {
@@ -32,10 +34,11 @@ public class ShoppingCartController {
     @Autowired
     private SellersRepository sellersRepository;
 
-    private List<ShoppingCart> shoppingCarts = Collections.synchronizedList(new ArrayList<>());
+    private static List<ShoppingCart> shoppingCarts = Collections.synchronizedList(new ArrayList<>());
 
     public synchronized void cache() {
         if (shoppingCarts.isEmpty() || shoppingCarts.size() != shoppingCartRepository.count()) {
+            shoppingCarts.clear();
             shoppingCarts = shoppingCartRepository.findAll();
         }
     }

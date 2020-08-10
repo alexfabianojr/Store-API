@@ -35,5 +35,5 @@ public class Seller {
     Employee employee;
 
     @Column(name = "sp_salesIdList")
-    private ArrayList<Long> salesIdList = new ArrayList<Long>();
+    private ArrayList<Long> salesIdList = new ArrayList<Long>(); /*remover*/
 }

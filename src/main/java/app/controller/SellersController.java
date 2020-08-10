@@ -1,9 +1,11 @@
 package app.controller;
 
 import app.module.entities.Seller;
+import app.module.pojo.Report;
 import app.repository.SellersRepository;
 import app.services.DocumentValidator;
 import app.services.ReturnSellersByGenre;
+import app.services.SellerReport;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,10 +25,11 @@ public class SellersController {
     @Autowired
     private SellersRepository sellersRepository;
 
-    private List<Seller> sellers = Collections.synchronizedList(new ArrayList<>());
+    private static List<Seller> sellers = Collections.synchronizedList(new ArrayList<>());
 
     public synchronized void cache() {
         if (sellers.isEmpty() || sellers.size() != sellersRepository.count()) {
+            sellers.clear();
             sellers = sellersRepository.findAll();
         }
     }
@@ -66,6 +69,16 @@ public class SellersController {
     public List<Seller> findByGenre(@PathVariable("genre") char genre) {
         cache();
         return ReturnSellersByGenre.find(sellers, genre);
+    }
+
+    @GetMapping(path = "/report-byid/{id}")
+    public ResponseEntity<Report> buildReport(@PathVariable("id") Long id) {
+        if (sellersRepository.findById(id).isPresent()) {
+            SellerReport report = new SellerReport();
+            return ResponseEntity.ok().body(report.bySeller(sellersRepository.findById(id).orElseThrow()));
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PostMapping(path = "/save")

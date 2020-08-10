@@ -21,10 +21,11 @@ public class ProductController {
     @Autowired
     private ProductRepository productRepository;
 
-    private List<Product> products = Collections.synchronizedList(new ArrayList<>());
+    private static List<Product> products = Collections.synchronizedList(new ArrayList<>());
 
     public synchronized void cache() {
         if (products.isEmpty() || (products.size() != productRepository.count())) {
+            products.clear();
             products = productRepository.findAll();
         }
     }

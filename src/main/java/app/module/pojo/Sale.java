@@ -12,6 +12,6 @@ import java.io.Serializable;
 @Data
 @EqualsAndHashCode
 public class Sale implements Serializable {
-    private int productId;
+    private Long productId;
     private int productQuantity;
 }

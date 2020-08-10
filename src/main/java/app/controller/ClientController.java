@@ -24,10 +24,11 @@ public class ClientController {
     @Autowired
     private ClientRepository clientRepository;
 
-    private List<Client> clients = Collections.synchronizedList(new ArrayList<>());
+    private static List<Client> clients = Collections.synchronizedList(new ArrayList<>());
 
     public synchronized void cache() {
         if (clients.isEmpty() || clients.size() != clientRepository.count()) {
+            clients.clear();
             clients = clientRepository.findAll();
         }
     }

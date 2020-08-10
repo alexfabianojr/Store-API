@@ -33,5 +33,5 @@ public class Client {
     Address address;
 
     @Column(name = "cl_shoppingcart_stories")
-    private ArrayList<Long> shoppingList = new ArrayList<Long>();
+    private ArrayList<Long> shoppingList = new ArrayList<Long>(); /*remover*/
 }

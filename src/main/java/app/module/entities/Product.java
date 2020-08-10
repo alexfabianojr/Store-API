@@ -33,7 +33,7 @@ public class Product {
     private String description;
 
     @Column(name = "product_price")
-    private BigDecimal price;
+    private Double price;
 
     @Column(name = "product_quantity")
     private int quantity;
